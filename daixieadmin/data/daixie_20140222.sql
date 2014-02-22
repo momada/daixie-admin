@@ -28,7 +28,6 @@ CREATE TABLE `admin` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `email` varchar(45) NOT NULL,
   `passwd` varchar(45) NOT NULL,
-  `type` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email_UNIQUE` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
@@ -40,8 +39,33 @@ CREATE TABLE `admin` (
 
 LOCK TABLES `admin` WRITE;
 /*!40000 ALTER TABLE `admin` DISABLE KEYS */;
-INSERT INTO `admin` VALUES (1,'ls09@software.nju.edu.cn','96e79218965eb72c92a549dd5a330112','0');
+INSERT INTO `admin` VALUES (1,'ls09@software.nju.edu.cn','96e79218965eb72c92a549dd5a330112');
 /*!40000 ALTER TABLE `admin` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `cust_supporter`
+--
+
+DROP TABLE IF EXISTS `cust_supporter`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cust_supporter` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `email` varchar(45) NOT NULL,
+  `passwd` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email_UNIQUE` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cust_supporter`
+--
+
+LOCK TABLES `cust_supporter` WRITE;
+/*!40000 ALTER TABLE `cust_supporter` DISABLE KEYS */;
+/*!40000 ALTER TABLE `cust_supporter` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -108,7 +132,7 @@ CREATE TABLE `user` (
   `description` varchar(1000) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email_UNIQUE` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -117,7 +141,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (3,'ls09@software.nju.edu.cn','96e79218965eb72c92a549dd5a330112',1,0,'Routh_Luo',0,'Routh...'),(4,'mf1332041@software.nju.edu.cn','96e79218965eb72c92a549dd5a330112',1,1,'mf1332041',0,'mf1332041');
+INSERT INTO `user` VALUES (3,'ls09@software.nju.edu.cn','96e79218965eb72c92a549dd5a330112',1,0,'Routh_Luo',0,'Routh...'),(4,'mf1332041@software.nju.edu.cn','96e79218965eb72c92a549dd5a330112',1,1,'mf1332041',0,'mf1332041'),(5,'262617697@qq.com','e10adc3949ba59abbe56e057f20f883e',0,0,'',0,''),(6,'routh@foxmail.com','e10adc3949ba59abbe56e057f20f883e',0,0,'',0,'');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -130,4 +154,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-02-22 12:23:09
+-- Dump completed on 2014-02-22 20:33:16

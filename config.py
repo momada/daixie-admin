@@ -8,7 +8,7 @@ DIR_LOGS = DIR_CUR + '/../logs'
 DIR_RESOURCES = DIR_CUR + '/resources'
 
 #global
-PORT = 6666
+PORT = 6667
 HOST = 'localhost'
 DEBUG = True
 ASSETS_DEBUG = True
