@@ -40,7 +40,6 @@
                     {% endif %}
                     <ul class="nav navbar-nav navbar-right">
                         {% if not current_user.is_authenticated() %}
-                        <li><a href="{{ url_for('general.register') }}">注册</a></li>
                         <li><a href="{{ url_for('general.login') }}">登录</a></li>
                         {% else %}
                         <li><a href="{{ url_for('user.home') }}">{{ current_user.nickname if current_user.nickname else current_user.email }}</a></li>

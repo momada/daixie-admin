@@ -6,7 +6,7 @@ from os.path import splitext, join, isdir, sep, altsep
 from subprocess import call
 from re import compile
 
-from daixie import app
+from daixieadmin import app
 
 from smtplib import *
 from email.mime.text import MIMEText

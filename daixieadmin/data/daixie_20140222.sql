@@ -28,6 +28,7 @@ CREATE TABLE `admin` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `email` varchar(45) NOT NULL,
   `passwd` varchar(45) NOT NULL,
+  `type` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email_UNIQUE` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
@@ -43,30 +44,6 @@ INSERT INTO `admin` VALUES (1,'ls09@software.nju.edu.cn','96e79218965eb72c92a549
 /*!40000 ALTER TABLE `admin` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `cust_supporter`
---
-
-DROP TABLE IF EXISTS `cust_supporter`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cust_supporter` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `email` varchar(45) NOT NULL,
-  `passwd` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email_UNIQUE` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `cust_supporter`
---
-
-LOCK TABLES `cust_supporter` WRITE;
-/*!40000 ALTER TABLE `cust_supporter` DISABLE KEYS */;
-/*!40000 ALTER TABLE `cust_supporter` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `order`

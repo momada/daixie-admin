@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from daixie.models.order import Order
+from daixieadmin.models.order import Order
 
 class OrderBiz:
 

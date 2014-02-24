@@ -5,8 +5,8 @@ from functools import wraps
 from flask import redirect, url_for
 from flask.ext.login import current_user
 
-from daixie import login_manager
-from daixie.utils.error import j_err
+from daixieadmin import login_manager
+from daixieadmin.utils.error import j_err
 
 def login_required(func):
 

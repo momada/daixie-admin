@@ -42,7 +42,7 @@ assets.register('all_js', all_js)
 # Login
 #
 from flask.ext.login import LoginManager
-from daixie.biz.user import UserBiz
+from daixieadmin.biz.admin import AdminBiz
 
 login_manager = LoginManager()
 login_manager.setup_app(app)
@@ -54,8 +54,8 @@ login_manager.login_message = u"这个页面需要登录后才能访问"
 # Handler
 #
 @login_manager.user_loader
-def load_user(user_id):
-    return UserBiz.get_user_by_id(user_id)
+def load_user(admin_id):
+    return AdminBiz.get_admin_by_id(admin_id)
 
 @app.errorhandler(404)
 def not_found(error):
@@ -72,10 +72,8 @@ def catch_error(error):
 #
 # Blueprints
 #
-from daixie.views import general
-from daixie.views import user
-from daixie.views import order
+from daixieadmin.views import general
+from daixieadmin.views import admin
 
 app.register_blueprint(general.mod)
-app.register_blueprint(user.mod)
-app.register_blueprint(order.mod)
+app.register_blueprint(admin.mod)
