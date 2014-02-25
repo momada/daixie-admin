@@ -9,7 +9,7 @@ from flask_wtf.file import FileField, FileAllowed, FileRequired
 
 from flask.ext.login import login_required, current_user
 
-from daixie.utils.error import DaixieError, fail, success
+from daixieadmin.utils.error import DaixieError, fail, success
 
 mod = Blueprint('admin', __name__)
 

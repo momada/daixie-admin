@@ -3,7 +3,6 @@
 from flask.ext.login import login_user, logout_user
 
 from daixieadmin.data.db import db_session
-from daixieadmin.models.cust_supporter import Cust_Supporter
 from daixieadmin.models.admin import Admin
 
 from daixieadmin.utils.error_type import USER_DUPLICATE, USER_REGISTER_OK, USER_LOGOUT_OK, \
@@ -14,7 +13,7 @@ from daixieadmin.utils.error import DaixieError
 class AdminBiz:
     @staticmethod
     def get_admin_by_id(id):
-        admin = db_session.query(admin).get(id)
+        admin = db_session.query(Admin).get(id)
         return admin
 
     # @staticmethod
