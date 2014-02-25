@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+CS_ADD_OK = u'CS added successfully'
 
 USER_REGISTER_OK = u'注册成功'
 
