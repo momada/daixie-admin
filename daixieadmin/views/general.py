@@ -20,6 +20,7 @@ def index():
     '''
     网站首页
     '''
+    all_cs = AdminBiz.get_all_cs;
     if current_user.is_authenticated():
         return redirect(url_for('.add_cs')) ###
     return redirect(url_for('.login'))
