@@ -21,10 +21,11 @@ def index():
     网站首页
     '''
     if current_user.is_authenticated():
-        return redirect(url_for('add_cs')) ###
-    return render_template('general/index.html')
+        return redirect(url_for('.add_cs')) ###
+    return redirect(url_for('.login'))
 
 @mod.route('/add_cs', methods=['GET', 'POST'])
+@login_required
 def add_cs():
     '''
     add cs
@@ -32,15 +33,16 @@ def add_cs():
     form = RegisterForm()
     if not form.validate_on_submit():
         print form.errors
-        return render_template('general/register.html', form=form, hide_login_link=True)
+        return render_template('general/add_cs.html', form=form, hide_login_link=True)
     cs = Admin(form.email.data, form.passwd.data)
 
     try:
         ret = AdminBiz.add_CS(cs)
     except DaixieError as e:
         fail(e)
-        return render_template('general/register.html', form=form, hide_login_link=True)        
+        return render_template('general/add_cs.html', form=form, hide_login_link=True)        
     success(ret)
+    return redirect(url_for('.add_cs'))
 
 @mod.route('/login', methods=['GET','POST'])
 def login():
@@ -56,12 +58,12 @@ def login():
 
     admin = Admin(email, passwd)
     try:
-        ret = AdminBiz.user_login(admin, auto)
+        ret = AdminBiz.admin_login(admin, auto)
     except DaixieError as e:
         fail(e)
         return render_template('general/login.html', form=form)
     success(ret)
-    return redirect(url_for('admin.home'))
+    return redirect(url_for('.add_cs'))
 
 @mod.route('/logout', methods=['GET','POST'])
 @login_required
@@ -70,7 +72,7 @@ def logout():
     注销
     '''
     try:
-        AdminBiz.user_logout()
+        AdminBiz.admin_logout()
     except DaixieError as e:
         fail(e)
     return redirect(url_for('.index'))
