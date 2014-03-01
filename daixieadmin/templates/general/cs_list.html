@@ -15,9 +15,8 @@
       <td>customer_supporter</td>
       <td>{{cs.id}}</td>
       <td>{{cs.email}}</td>
-      <td>
-          
-           <a class="btn btn-warning" href="{{url_for('general.delete_cs', id=cs.id)}}">
+      <td>          
+           <a class="btn btn-warning" href="{{url_for('admin.delete_cs', id=cs.id)}}">
             delete</a>
       </td>
       <td>
@@ -32,7 +31,7 @@
       <td>{{solver.id}}</td>
       <td>{{solver.email}}</td>
       <td>    
-           <a class="btn btn-warning" href="{{url_for('general.delete_solver', id=solver.id)}}">
+           <a class="btn btn-warning" href="{{url_for('admin.delete_solver', id=solver.id)}}">
             delete</a>
       </td>
       <td>
@@ -45,7 +44,7 @@
 
   <div class="col-md-8 col-md-offset-2">
     <div class="row">
-        <form class="form-horizontal col-md-offset-2" method="post" action="{{ url_for('general.management') }}">
+        <form class="form-horizontal col-md-offset-2" method="post" action="{{ url_for('admin.management') }}">
           {{ form.hidden_tag() }}
           {{ form.csrf_token }}
             <div class="form-group">

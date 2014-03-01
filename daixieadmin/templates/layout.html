@@ -33,7 +33,9 @@
                                 <li><a href="">关联账户设置</a></li>
                             </ul>
                             <ul class="dropdown-menu">
-                                <li><a href="{{ url_for('general.management') }}">management</a></li>
+                                {% if current_user.get_id()=='1' %}
+                                <li><a href="{{ url_for('admin.management') }}">management</a></li>
+                                {% endif %}
                             </ul>
                         </li>
                     </ul>
