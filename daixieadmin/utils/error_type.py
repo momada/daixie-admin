@@ -32,3 +32,13 @@ USER_LOGOUT_FAIL = u'注销失败'
 USER_ACTIVATE_TITLE = u'激活账号'
 
 FILL_USER_INFO_OK = u'成功完善个人信息'
+
+CREATE_ORDER_OK = u'创建订单成功'
+
+CREATE_ORDER_FAIL = u'创建订单失败'
+
+ORDER_NOT_EXIST = u'订单不存在'
+
+EDIT_ORDER_OK = u'编辑订单成功'
+
+EDIT_ORDER_FAIL = u'编辑订单失败'

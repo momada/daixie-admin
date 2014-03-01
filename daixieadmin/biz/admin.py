@@ -6,8 +6,7 @@ from daixieadmin.data.db import db_session
 from daixieadmin.models.admin import Admin
 
 from daixieadmin.utils.error_type import USER_DUPLICATE, USER_LOGOUT_OK, \
-    USER_NOT_EXIST, USER_LOGIN_OK, USER_LOGOUT_FAIL, \
-    CS_ADD_OK
+    USER_NOT_EXIST, USER_LOGIN_OK, USER_LOGOUT_FAIL, CS_ADD_OK
 from daixieadmin.utils.error import DaixieError
 
 class AdminBiz:
@@ -57,15 +56,6 @@ class AdminBiz:
         db_session.commit()
 
         return CS_ADD_OK
-
-    # @staticmethod
-    # def activate_user(cs):
-    #     cs.activate = cs.ACTIVATE.YES
-    #     db_session.commit()
-
-    #     login_user(cs, remember=True)
-
-    #     return USER_ACTIVATE_OK
 
     # @staticmethod
     # def edit_cs_profile(cs):

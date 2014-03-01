@@ -11,7 +11,7 @@
       <th>要求时间</th>
       <th>操作</th>
   </tr>
-  {%for order in order_list%}
+  {% for order in order_list.items %}
   <tr>
       <td>{{order.id}}</td>
       <td>{{order.title}}</td>
@@ -24,6 +24,7 @@
           <a class="btn btn-warning" href="" target="_blank">付款</a>
           {% endif %}
           <a class="btn btn-info" href="{{ url_for('order.more_info', id=order.id) }}">详细</a>
+          <a class="btn btn-primary" href="{{ url_for('order.edit_order', id=order.id) }}">修改</a>
       </td>
   </tr>
   {% endfor %}

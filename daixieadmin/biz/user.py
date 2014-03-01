@@ -2,13 +2,13 @@
 
 from flask.ext.login import login_user, logout_user
 
-from daixie.data.db import db_session
-from daixie.models.user import User
+from daixieadmin.data.db import db_session
+from daixieadmin.models.user import User
 
-from daixie.utils.error_type import USER_DUPLICATE, USER_REGISTER_OK, USER_LOGOUT_OK, \
+from daixieadmin.utils.error_type import USER_DUPLICATE, USER_REGISTER_OK, USER_LOGOUT_OK, \
     USER_ACTIVATE_OK, USER_NOT_EXIST, USER_LOGIN_OK, USER_LOGOUT_FAIL, EDIT_USER_PROFILE_OK, \
     EDIT_USER_PROFILE_FAIL
-from daixie.utils.error import DaixieError
+from daixieadmin.utils.error import DaixieError
 
 class UserBiz:
     @staticmethod

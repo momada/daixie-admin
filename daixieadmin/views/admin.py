@@ -14,4 +14,3 @@ def home():
 	主页
 	'''
 	return render_template('admin/home.html')
-
