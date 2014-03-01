@@ -30,7 +30,6 @@ class UserBiz:
     def register(user):
         if UserBiz.get_user_by_email(user.email):
             raise DaixieError(USER_DUPLICATE)
-
         db_session.add(user)
         db_session.commit()
         
