@@ -12,7 +12,7 @@
   </tr>
   {%for cs in cs_list%}
   <tr>
-      <td>{{cs.type}}</td>
+      <td>customer_supporter</td>
       <td>{{cs.id}}</td>
       <td>{{cs.email}}</td>
       <td>
@@ -28,7 +28,7 @@
 
 {%for solver in solver_list%}
   <tr>
-      <td>{{solver.type}}</td>
+      <td>solver</td>
       <td>{{solver.id}}</td>
       <td>{{solver.email}}</td>
       <td>    
@@ -45,7 +45,7 @@
 
   <div class="col-md-8 col-md-offset-2">
     <div class="row">
-        <form class="form-horizontal col-md-offset-2" method="post" action="{{ url_for('general.index') }}">
+        <form class="form-horizontal col-md-offset-2" method="post" action="{{ url_for('general.management') }}">
           {{ form.hidden_tag() }}
           {{ form.csrf_token }}
             <div class="form-group">

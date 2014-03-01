@@ -34,6 +34,15 @@ def index():
     '''
     网站首页
     '''
+    if current_user.is_authenticated():
+        return render_template('general/index.html')
+    return redirect(url_for('.login'))
+
+@mod.route('/management', methods=['GET', 'POST'])
+def management():
+    '''
+    网站首页
+    '''
     if current_user.is_authenticated() and current_user.type==1:
         form = RegisterForm()
         all_cs = AdminBiz.get_all_CS();
@@ -47,7 +56,7 @@ def index():
                 ret = AdminBiz.add_CS(cs)
             except DaixieError as e:
                 fail(e)
-                return redirect(url_for('.index'))     
+                return redirect(url_for('.management'))     
             success(ret)
         else:
             solver = User(form.email.data, form.passwd.data)
@@ -55,11 +64,11 @@ def index():
                 ret = UserBiz.add_solver(solver)
             except DaixieError as e:
                 fail(e)
-                return redirect(url_for('.index'))     
+                return redirect(url_for('.management'))     
             success(ret)
-        return redirect(url_for('.index'))
+        return redirect(url_for('.management'))
     if current_user.is_authenticated() and current_user.get_id>1:
-        return render_template('general/index.html')
+        return redirect(url_for('.management'))
     return redirect(url_for('.login'))
 
 # @mod.route('/add_cs', methods=['GET', 'POST'])
@@ -95,7 +104,7 @@ def delete_cs(id):
     except DaixieError as e:
         fail(e) 
     success(ret)
-    return redirect(url_for('.index'))
+    return redirect(url_for('.management'))
 
 @mod.route('/add_css', methods=['GET', 'POST'])
 @mod.route('/delete_solver/<int:id>', methods=['GET', 'POST'])
@@ -112,7 +121,7 @@ def delete_solver(id):
     except DaixieError as e:
         fail(e) 
     
-    return redirect(url_for('.index'))
+    return redirect(url_for('.management'))
 
 @mod.route('/login', methods=['GET','POST'])
 def login():
