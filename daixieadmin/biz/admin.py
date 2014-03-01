@@ -6,7 +6,7 @@ from daixieadmin.data.db import db_session
 from daixieadmin.models.admin import Admin
 
 from daixieadmin.utils.error_type import USER_DUPLICATE, USER_LOGOUT_OK, \
-    USER_NOT_EXIST, USER_LOGIN_OK, USER_LOGOUT_FAIL, CS_ADD_OK
+    USER_NOT_EXIST, USER_LOGIN_OK, USER_LOGOUT_FAIL, CS_DELETE_OK, CS_ADD_OK
 from daixieadmin.utils.error import DaixieError
 
 class AdminBiz:
@@ -54,9 +54,18 @@ class AdminBiz:
             raise DaixieError(USER_DUPLICATE)
         db_session.add(cs)
         db_session.commit()
-
         return CS_ADD_OK
 
+    @staticmethod
+    def delete_CS(cs):
+        db_session.delete(cs)
+        db_session.commit()
+        return CS_DELETE_OK
+
+    @staticmethod
+    def get_all_CS():
+        all_cs = db_session.query(Admin).filter(Admin.type == 'CS').all()   #pass the admin
+        return all_cs
     # @staticmethod
     # def edit_cs_profile(cs):
     #     try:

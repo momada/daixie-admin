@@ -1,7 +1,13 @@
 # -*- coding: utf-8 -*-
+SOLVER_ADD_OK = u"SOLVER ADDED successfully"
+
 CS_ADD_OK = u'CS added successfully'
 
+CS_DELETE_OK = u'CS deleted successfully'
+
 USER_REGISTER_OK = u'注册成功'
+
+SOLVER_DELETE_OK = u"SOLVER DELETED OK"
 
 AGENT_APPLY_OK = u'正在申请成为代购者'
 

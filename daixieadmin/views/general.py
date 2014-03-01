@@ -3,7 +3,7 @@
 
 from flask import Blueprint, url_for, redirect, render_template
 from flask_wtf import Form
-from wtforms import TextField, PasswordField, BooleanField
+from wtforms import TextField, PasswordField, BooleanField, SelectField
 from wtforms.validators import Email, Regexp, DataRequired, EqualTo
                             
 from flask.ext.login import login_required, current_user
@@ -11,9 +11,21 @@ from flask.ext.login import login_required, current_user
 from daixieadmin.utils.error import DaixieError, fail, success
 
 from daixieadmin.models.admin import Admin
+
 from daixieadmin.biz.admin import AdminBiz
 
+#from functools import wraps
+
 mod = Blueprint('general', __name__)
+
+# def admin_required(func):
+
+#     @wraps(func)
+#     def wrapper(*args, **kwargs):
+#         if not current_user.get_id()==1:
+#             fail("not qualified!")
+#         return func(*args, **kwargs)
+#     return wrapper
 
 @mod.route('/', methods=['GET', 'POST'])
 def index():
@@ -21,28 +33,10 @@ def index():
     网站首页
     '''
     if current_user.is_authenticated():
-        return redirect(url_for('.add_cs'))
+        return render_template('general/index.html')
     return redirect(url_for('.login'))
 
-@mod.route('/add_cs', methods=['GET', 'POST'])
-@login_required
-def add_cs():
-    '''
-    add cs
-    '''
-    form = RegisterForm()
-    if not form.validate_on_submit():
-        print form.errors
-        return render_template('general/add_cs.html', form=form, hide_login_link=True)
-    cs = Admin(form.email.data, form.passwd.data)
 
-    try:
-        ret = AdminBiz.add_CS(cs)
-    except DaixieError as e:
-        fail(e)
-        return render_template('general/add_cs.html', form=form, hide_login_link=True)        
-    success(ret)
-    return redirect(url_for('.add_cs'))
 
 @mod.route('/login', methods=['GET','POST'])
 def login():
@@ -63,7 +57,7 @@ def login():
         fail(e)
         return render_template('general/login.html', form=form)
     success(ret)
-    return redirect(url_for('.add_cs'))
+    return redirect(url_for('.index'))
 
 @mod.route('/logout', methods=['GET','POST'])
 @login_required
@@ -87,6 +81,8 @@ class LoginForm(Form):
     passwd = PasswordField(u'密码', validators=[DataRequired(),Regexp('[\w\d-]{5,20}')])
     auto = BooleanField(u'自动登录', default=False)
 class RegisterForm(Form):
+    user_choices = [('0', u'CS'), ('1', u'SOLVER')]
+    user_type=SelectField(u'性别', choices=user_choices, default='0')
     email = TextField(u'邮箱地址*', validators=[DataRequired(), Email()])
     passwd = PasswordField(u'密码*', validators=[DataRequired(),Regexp('[\w\d-]{5,20}', message=u'5-20位')])
     passwd_confirm = PasswordField(u'确认密码*', validators=[DataRequired(), EqualTo('passwd', message=u'密码不一致')])

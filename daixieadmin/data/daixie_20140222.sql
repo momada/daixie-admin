@@ -77,7 +77,7 @@ CREATE TABLE `order` (
   KEY `fk_order_2_idx1` (`solver_id`),
   CONSTRAINT `fk_order_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_order_2` FOREIGN KEY (`solver_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_order_3` FOREIGN KEY (`cs_id`) REFERENCES `admin` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_order_3` FOREIGN KEY (`cs_id`) REFERENCES `admin` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
