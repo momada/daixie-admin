@@ -32,7 +32,7 @@ mail = Mail(app)
 from flask.ext.assets import Environment, Bundle
 assets = Environment(app)
 less = Bundle('site/css/common.less', filters='less,cssmin', output='gen/less.css')
-all_css = Bundle('bootstrap/css/bootstrap.min.css', 'datepicker/datetimepicker.min.css', less, filters='cssmin', output='gen/packed.css')
+all_css = Bundle('bootstrap/css/bootstrap.min.css', 'bootstrap/css/bootstrap.theme.css','datepicker/datetimepicker.min.css', less, filters='cssmin', output='gen/packed.css')
 all_js = Bundle('jQuery/jquery-1.10.2.min.js','bootstrap/js/bootstrap.min.js', 'datepicker/datetimepicker.min.js', 'site/js/common.js',filters='jspacker', output='gen/packed.js')
 
 assets.register('all_css', all_css)

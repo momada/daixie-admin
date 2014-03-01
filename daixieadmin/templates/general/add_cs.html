@@ -6,10 +6,9 @@
 
 <div class="col-md-8 col-md-offset-2">
     <div class="row">
-        <h2 class="headline text-center">加入{{ config['SITE_NAME'] }}, 和全北京的小伙伴一起合寄</h2>
         <form class="form-horizontal col-md-offset-2" method="post" action="{{ url_for('general.add_cs') }}">
-            {{ form.hidden_tag() }}
-            {{ form.csrf_token }}
+          {{ form.hidden_tag() }}
+          {{ form.csrf_token }}
             <div class="form-group">
                 <label class="col-md-3 control-label">邮箱</label>
                 <div class="col-md-5">

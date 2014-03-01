@@ -2,11 +2,11 @@
 
 from hashlib import md5
 
-from daixie.models import enum
+from daixieadmin.models import enum
 
 from flask.ext.login import UserMixin
 
-from daixie import db
+from daixieadmin import db
 
 class User(db.Model, UserMixin):
 

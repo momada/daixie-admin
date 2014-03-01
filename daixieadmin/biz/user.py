@@ -2,19 +2,24 @@
 
 from flask.ext.login import login_user, logout_user
 
-from daixie.data.db import db_session
-from daixie.models.user import User
+from daixieadmin.data.db import db_session
+from daixieadmin.models.user import User
 
-from daixie.utils.error_type import USER_DUPLICATE, USER_REGISTER_OK, USER_LOGOUT_OK, \
+from daixieadmin.utils.error_type import USER_DUPLICATE, USER_REGISTER_OK, USER_LOGOUT_OK, \
     USER_ACTIVATE_OK, USER_NOT_EXIST, USER_LOGIN_OK, USER_LOGOUT_FAIL, EDIT_USER_PROFILE_OK, \
-    EDIT_USER_PROFILE_FAIL
-from daixie.utils.error import DaixieError
+    EDIT_USER_PROFILE_FAIL,SOLVER_DELETE_OK
+from daixieadmin.utils.error import DaixieError
 
 class UserBiz:
     @staticmethod
     def get_user_by_id(id):
         user = db_session.query(User).get(id)
         return user
+
+    @staticmethod
+    def get_all_solver():
+        all_solver = db_session.query(User).filter(User.type == 'SOLVER').all()   #pass the admin
+        return all_solver
 
     @staticmethod
     def get_user_by_email(email):
@@ -30,6 +35,19 @@ class UserBiz:
         db_session.commit()
         
         return USER_REGISTER_OK
+    @staticmethod
+    def add_solver(user):
+        if UserBiz.get_user_by_email(user.email):
+            raise DaixieError(USER_DUPLICATE)
+        db_session.add(user)
+        db_session.commit()
+        return USER_REGISTER_OK
+
+    @staticmethod
+    def delete_solver(user):
+        db_session.delete(user)
+        db_session.commit()
+        return SOLVER_DELETE_OK
 
     @staticmethod
     def user_login(user, remember):
