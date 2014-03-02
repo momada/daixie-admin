@@ -33,7 +33,7 @@ def index():
     网站首页
     '''
     if current_user.is_authenticated():
-        return render_template('general/index.html')
+        return render_template('admin/home.html')
     return redirect(url_for('.login'))
 
 

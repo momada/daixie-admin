@@ -55,6 +55,23 @@ class Order(db.Model, UserMixin):
         self.extra_money = extra_money
         self.order_price = self.order_price
 
+    @property
+    def user_email(self):
+        from daixieadmin.biz.user import UserBiz
+        user = UserBiz.get_user_by_id(self.user_id)
+        return user.email
+
+    @property
+    def cs_email(self):
+        from daixieadmin.biz.admin import AdminBiz
+        cs = AdminBiz.get_admin_by_id(self.cs_id)
+        return cs.email
+
+    @property
+    def solver_email(self):
+        from daixieadmin.biz.user import UserBiz
+        solver = UserBiz.get_user_by_id(self.solver_id)
+        return solver.email
 
     def __repr__(self):
         return '<Order %r %r %r %r>' % (self.id, self.user_id, self.cs_id, self.solver_id)

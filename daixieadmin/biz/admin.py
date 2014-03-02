@@ -20,16 +20,6 @@ class AdminBiz:
         cs = db_session.query(Admin).filter_by(email=email).first()
         return cs
 
-    # @staticmethod
-    # def register(cs):
-    #     if UserBiz.get_user_by_email(cs.email):
-    #         raise DaixieError(USER_DUPLICATE)
-
-    #     db_session.add(cs)
-    #     db_session.commit()
-        
-    #     return USER_REGISTER_OK
-
     @staticmethod
     def admin_login(admin, remember):
         u = db_session.query(Admin).filter_by(email=admin.email, passwd=admin.passwd).first()
@@ -66,12 +56,3 @@ class AdminBiz:
     def get_all_CS():
         all_cs = db_session.query(Admin).filter(Admin.type == 'CS').all()   #pass the admin
         return all_cs
-    # @staticmethod
-    # def edit_cs_profile(cs):
-    #     try:
-    #         db_session.add(cs)
-    #         db_session.commit()
-    #         login_user(cs, remember=True)
-    #     except:
-    #         raise DaixieError(EDIT_USER_PROFILE_FAIL)
-    #     return EDIT_USER_PROFILE_OK

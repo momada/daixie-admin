@@ -60,26 +60,6 @@ def management():
         return redirect(url_for('.management'))
     return redirect(url_for('.login'))
 
-# @mod.route('/add_cs', methods=['GET', 'POST'])
-# @login_required
-# def add_cs():
-#     '''
-#     add cs
-#     '''
-#     form = RegisterForm()
-#     if not form.validate_on_submit():
-#         print form.errors
-#         return render_template('general/add_cs.html', form=form, hide_login_link=True)
-#     cs = Admin(form.email.data, form.passwd.data)
-
-#     try:
-#         ret = AdminBiz.add_CS(cs)
-#     except DaixieError as e:
-#         fail(e)
-#         return render_template('general/add_cs.html', form=form, hide_login_link=True)        
-#     success(ret)
-#     return redirect(url_for('.add_cs'))
-
 @mod.route('/add_cs', methods=['GET', 'POST'])
 @mod.route('/delete_cs/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -103,7 +83,6 @@ def delete_solver(id):
     delete cs
     '''
     solver = UserBiz.get_user_by_id(id)
-    print "hhhhhhhhhhhhhhhhhhhhhh"
     try:
         ret = UserBiz.delete_solver(solver)
         success(ret)
@@ -114,7 +93,7 @@ def delete_solver(id):
 
 
 class RegisterForm(Form):
-    user_choices = [('0', u'CS'), ('1', u'SOLVER')]
+    user_choices = [('0', u'客服'), ('1', u'解题员')]
     user_type=SelectField(u'性别', choices=user_choices, default='0')
     email = TextField(u'邮箱地址*', validators=[DataRequired(), Email()])
     passwd = PasswordField(u'密码*', validators=[DataRequired(),Regexp('[\w\d-]{5,20}', message=u'5-20位')])
