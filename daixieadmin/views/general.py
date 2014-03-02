@@ -80,6 +80,7 @@ class LoginForm(Form):
     email = TextField(u'邮箱', validators=[DataRequired(), Email()])
     passwd = PasswordField(u'密码', validators=[DataRequired(),Regexp('[\w\d-]{5,20}')])
     auto = BooleanField(u'自动登录', default=False)
+
 class RegisterForm(Form):
     user_choices = [('0', u'CS'), ('1', u'SOLVER')]
     user_type=SelectField(u'性别', choices=user_choices, default='0')

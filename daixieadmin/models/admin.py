@@ -25,5 +25,10 @@ class Admin(db.Model, UserMixin):
         self.passwd = md5(passwd).hexdigest()
         self.type = Admin.ADMIN_TYPE.CS
 
+    @property
+    def user_type(self):
+        if self.type == Admin.ADMIN_TYPE.CS:
+            return u'客服'
+
     def __repr__(self):
         return '<ADMIN %r %s>' % (self.email, self.type)

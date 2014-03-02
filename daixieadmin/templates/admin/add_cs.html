@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+{% from 'import/tools.html' import errors %}
+{% from 'import/tools.html' import error %}
+
+{% block content %}
+
+<div class="col-md-8 col-md-offset-2">
+  <div class="row">
+      <form class="form-horizontal col-md-offset-2" method="post" action="{{ url_for('admin.add_cs') }}">
+        {{ form.hidden_tag() }}
+        {{ form.csrf_token }}
+          <div class="form-group">
+                <label class="col-md-3 control-label">用户类型</label>
+              <div class="col-md-5">
+                  {{ form.user_type(class='form-control',  placeholder='type',required='required') }}
+                  {{ error(form.errors['user_type']) }}
+              </div>
+          </div>
+
+          <div class="form-group">
+              <label class="col-md-3 control-label">邮箱</label>
+              <div class="col-md-5">
+                  {{ form.email(class='form-control', type='email', placeholder='邮箱', required='required') }}
+                  {{ error(form.errors['email']) }}
+              </div>
+          </div>
+
+          <div class="form-group">
+              <label class="col-md-3 control-label">密码</label>
+              <div class="col-md-5">
+                  {{ form.passwd(class='form-control', placeholder="密码") }}
+                  {{ error(form.errors['passwd']) }}
+              </div>
+          </div>
+          <div class="form-group">
+              <label class="col-md-3 control-label">确认密码</label>
+              <div class="col-md-5">
+                  {{ form.passwd_confirm(class='form-control', placeholder="确认密码") }}
+                  {{ error(form.errors['passwd_confirm']) }}
+              </div>
+          </div>
+
+          <div class="form-group">
+              <div class="col-md-offset-3 col-md-5">
+                  <input class="btn btn-orange" type="submit" value="&nbsp;&nbsp;创建&nbsp;&nbsp;">
+              </div>
+          </div>
+
+      </form>
+  </div>
+</div>
+
+{% endblock content %}

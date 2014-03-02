@@ -35,6 +35,8 @@ def create_order():
         form.title.data, form.expect_hour.data, form.order_price.data, form.grade.data, 
         form.description.data, form.supp_info.data, form.extra_item.data, form.extra_money.data, 
         form.log.data)
+    print "***************"
+    print order
     try:
         ret = OrderBiz.create_order(order)
     except DaixieError as e:
@@ -147,12 +149,10 @@ def edit_order_for_admin(id):
 class OrderForm(Form):
     status_choices = [('0', u'已创建‘'), ('1', u'已付款'), ('2', u'解决中'), ('3', u'已完成')]
 
-    id = TextField(u'订单编号')
     user_email = TextField(u'用户邮箱', validators=[DataRequired()])
-    cs_email = TextField(u'客服邮箱')
-    solver_email = TextField(u'解题员邮箱')
+    cs_email = TextField(u'客服邮箱', validators=[DataRequired()])
+    solver_email = TextField(u'解题员邮箱', validators=[DataRequired()])
     status = SelectField(u'订单状态', choices=status_choices, default='0')
-    create_time = TextField(u'创建时间')
     require_time = TextField(u'要求时间')
     expect_time = TextField(u'预计时间')
     title = TextField(u'标题')

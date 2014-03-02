@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
-SOLVER_UPDATE_OK = u"SOLVER UPDATED SUCCESSFULLY"
+SOLVER_UPDATE_OK = u"修改解题员密码成功"
 
-CS_UPDATE_OK = u"CUSTOMER_SUPPORT UPDATED SUCCESSFULLY"
+CS_UPDATE_OK = u"修改客服密码成功"
 
-SOLVER_ADD_OK = u"SOLVER ADDED successfully"
+SOLVER_ADD_OK = u"创建解题员成功"
 
-CS_ADD_OK = u'CS added successfully'
+SOLVER_DELETE_OK = u"删除解题员成功"
 
-CS_DELETE_OK = u'CS deleted successfully'
+CS_ADD_OK = u'创建客服成功'
+
+CS_DELETE_OK = u'删除客服成功'
 
 USER_REGISTER_OK = u'注册成功'
-
-SOLVER_DELETE_OK = u"SOLVER DELETED OK"
 
 AGENT_APPLY_OK = u'正在申请成为代购者'
 

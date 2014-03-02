@@ -8,7 +8,7 @@ from daixieadmin.models.user import User
 
 from daixieadmin.utils.error_type import USER_DUPLICATE, USER_REGISTER_OK, USER_LOGOUT_OK, \
     USER_ACTIVATE_OK, USER_NOT_EXIST, USER_LOGIN_OK, USER_LOGOUT_FAIL, EDIT_USER_PROFILE_OK, \
-    EDIT_USER_PROFILE_FAIL,SOLVER_DELETE_OK,SOLVER_UPDATE_OK
+    EDIT_USER_PROFILE_FAIL,SOLVER_DELETE_OK,SOLVER_UPDATE_OK, SOLVER_ADD_OK
 from daixieadmin.utils.error import DaixieError
 
 class UserBiz:
@@ -18,8 +18,8 @@ class UserBiz:
         return user
 
     @staticmethod
-    def get_all_solver():
-        all_solver = db_session.query(User).filter(User.type == 'SOLVER').all()   #pass the admin
+    def get_all_user():
+        all_solver = db_session.query(User).all()   #pass the admin
         return all_solver
 
     @staticmethod
@@ -52,7 +52,7 @@ class UserBiz:
             raise DaixieError(USER_DUPLICATE)
         db_session.add(user)
         db_session.commit()
-        return USER_REGISTER_OK
+        return SOLVER_ADD_OK
 
     @staticmethod
     def delete_solver(user):

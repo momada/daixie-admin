@@ -27,39 +27,45 @@ def home():
 	'''
 	return render_template('admin/home.html')
 
-@mod.route('/management', methods=['GET', 'POST'])
-def management():
+@mod.route('/cs_list', methods=['GET', 'POST'])
+@login_required
+def cs_list():
     '''
     网站首页
     '''
-    if current_user.is_authenticated() and current_user.type==1:
-        form = RegisterForm()
+    if current_user.type == Admin.ADMIN_TYPE.ADMIN:
         all_cs = AdminBiz.get_all_CS();
-        all_solver = UserBiz.get_all_solver();
+        all_user = UserBiz.get_all_user();
+        return render_template('admin/cs_list.html', cs_list=all_cs, user_list=all_user)
+    else:
+        return render_template('general/index.html')
+
+@mod.route('/add_cs', methods=['GET', 'POST'])
+@login_required
+def add_cs():
+    '''
+    创建解题员和客服
+    '''
+    if current_user.type == Admin.ADMIN_TYPE.ADMIN:
+        form = RegisterForm()
         if not form.validate_on_submit():
             print form.errors
-            return render_template('admin/cs_list.html', cs_list=all_cs, solver_list=all_solver ,form=form)
-        if form.user_type.data=='0':
-            cs = Admin(form.email.data, form.passwd.data)
-            try:
+            return render_template('admin/add_cs.html', form=form)
+        try:
+            if form.user_type.data=='0':
+                cs = Admin(form.email.data, form.passwd.data)
                 ret = AdminBiz.add_CS(cs)
-            except DaixieError as e:
-                fail(e)
-                return redirect(url_for('.management'))     
-            success(ret)
-        else:
-            solver = User(form.email.data, form.passwd.data)
-            try:
+            else:
+                solver = User(form.email.data, form.passwd.data, form.user_type.data)
                 ret = UserBiz.add_solver(solver)
-            except DaixieError as e:
-                fail(e)
-                return redirect(url_for('.management'))     
             success(ret)
-        return redirect(url_for('.management'))
-    elif current_user.is_authenticated() :
+        except DaixieError as e:
+            fail(e)
+            return redirect(url_for('.add_cs'))
+        return redirect(url_for('.add_cs'))     
+    else:
         return render_template('general/index.html')
-    return redirect(url_for('.login'))
-    
+
 @mod.route('/update_cs/<int:id>', methods=['GET', 'POST'])
 @login_required
 def update_cs(id):
@@ -75,9 +81,9 @@ def update_cs(id):
         ret = AdminBiz.cs_commit_update(cs=cs)
     except DaixieError as e:
         fail(e)
-        return redirect(url_for('.management'))     
+        return redirect(url_for('.cs_list'))     
     success(ret)
-    return redirect(url_for('.management')) 
+    return redirect(url_for('.cs_list')) 
 
 @mod.route('/update_solver/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -94,11 +100,11 @@ def update_solver(id):
         ret = UserBiz.solver_commit_update(solver=solver)
     except DaixieError as e:
         fail(e)
-        return redirect(url_for('.management'))     
+        return redirect(url_for('.cs_list'))     
     success(ret)
-    return redirect(url_for('.management')) 
+    return redirect(url_for('.cs_list')) 
 
-@mod.route('/add_cs', methods=['GET', 'POST'])
+@mod.route('/delete_cs', methods=['GET', 'POST'])
 @mod.route('/delete_cs/<int:id>', methods=['GET', 'POST'])
 @login_required
 def delete_cs(id):
@@ -111,9 +117,9 @@ def delete_cs(id):
     except DaixieError as e:
         fail(e) 
     success(ret)
-    return redirect(url_for('.management'))
+    return redirect(url_for('.cs_list'))
 
-@mod.route('/add_css', methods=['GET', 'POST'])
+@mod.route('/delete_solver', methods=['GET', 'POST'])
 @mod.route('/delete_solver/<int:id>', methods=['GET', 'POST'])
 @login_required
 def delete_solver(id):
@@ -127,15 +133,16 @@ def delete_solver(id):
     except DaixieError as e:
         fail(e) 
     
-    return redirect(url_for('.management'))
+    return redirect(url_for('.cs_list'))
 
 class RegisterForm(Form):
-    user_choices = [('0', u'客服'), ('1', u'解题员')]
-    user_type=SelectField(u'性别', choices=user_choices, default='0')
+    user_type_choices = [('0', u'客服'), ('1', u'解题员')]
+    
+    user_type=SelectField(u'用户类型', choices=user_type_choices, default='0')
     email = TextField(u'邮箱地址*', validators=[DataRequired(), Email()])
     passwd = PasswordField(u'密码*', validators=[DataRequired(),Regexp('[\w\d-]{5,20}', message=u'5-20位')])
     passwd_confirm = PasswordField(u'确认密码*', validators=[DataRequired(), EqualTo('passwd', message=u'密码不一致')])
 
 class AccountForm(Form):
-    passwd = PasswordField(u'密码*', validators=[DataRequired(),Regexp('[\w\d-]{5,20}', message=u'5-20位')])
+    passwd = PasswordField(u'新密码*', validators=[DataRequired(),Regexp('[\w\d-]{5,20}', message=u'5-20位')])
     passwd_confirm = PasswordField(u'确认密码*', validators=[DataRequired(), EqualTo('passwd', message=u'密码不一致')])

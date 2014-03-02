@@ -35,6 +35,12 @@ class User(db.Model, UserMixin):
         self.sex = User.SEX.MALE
         self.description = ''
 
+    @property
+    def user_type(self):
+        if self.type == User.USER_TYPE.USER:
+            return u'普通用户'
+        elif self.type == User.USER_TYPE.SOLVER:
+            return u'解题员'
 
     def __repr__(self):
         return '<User %r>' % self.email

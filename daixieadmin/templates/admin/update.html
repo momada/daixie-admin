@@ -10,7 +10,7 @@ Change Password {{ config['SITE_NAME'] }}
 <div class="row">
     
     <div class="page-header">
-        <h2>登录{{ config['SITE_NAME'] }}</h2>
+        <h2>修改密码</h2>
     </div>
     {% if type == "CS" %}
     <form class="form-horizontal" id="register-form" method="post" action="{{url_for('admin.update_cs',id=id)}}">  
@@ -21,9 +21,9 @@ Change Password {{ config['SITE_NAME'] }}
         {{ form.csrf_token }}
     
         <div class="form-group">
-                <label class="col-md-3 control-label">密码</label>
+                <label class="col-md-3 control-label">新密码</label>
                 <div class="col-md-5">
-                    {{ form.passwd(class='form-control', placeholder="密码") }}
+                    {{ form.passwd(class='form-control', placeholder="新密码") }}
                 </div>
         </div>
         <div class="form-group">
@@ -34,7 +34,7 @@ Change Password {{ config['SITE_NAME'] }}
             </div>
         <div class="form-group">
             <div class="col-md-5 col-md-offset-2">
-                <input class="btn btn-orange" type="submit" value="add"/>
+                <input class="btn btn-orange" type="submit" value="修改"/>
             </div>
         </div>
     </form>
