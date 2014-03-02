@@ -37,7 +37,7 @@ def management():
         all_solver = UserBiz.get_all_solver();
         if not form.validate_on_submit():
             print form.errors
-            return render_template('general/cs_list.html', cs_list=all_cs, solver_list=all_solver ,form=form)
+            return render_template('admin/cs_list.html', cs_list=all_cs, solver_list=all_solver ,form=form)
         if form.user_type.data=='0':
             cs = Admin(form.email.data, form.passwd.data)
             try:
@@ -55,8 +55,8 @@ def management():
                 return redirect(url_for('.management'))     
             success(ret)
         return redirect(url_for('.management'))
-    if current_user.is_authenticated() and current_user.get_id>1:
-        return redirect(url_for('.management'))
+    elif current_user.is_authenticated() :
+        return render_template('general/index.html')
     return redirect(url_for('.login'))
 
 # @mod.route('/add_cs', methods=['GET', 'POST'])
@@ -79,6 +79,45 @@ def management():
 #     success(ret)
 #     return redirect(url_for('.add_cs'))
 
+    
+@mod.route('/update_cs/<int:id>', methods=['GET', 'POST'])
+@login_required
+def update_cs(id):
+    '''
+    update cs
+    '''
+    cs=AdminBiz.get_admin_by_id(id);
+    form = AccountForm();
+    if not form.validate_on_submit():
+        return render_template('admin/update.html',form=form,id=id,type="CS")
+    try:
+        cs.passwd = form.passwd.data
+        ret = AdminBiz.cs_commit_update(cs=cs)
+    except DaixieError as e:
+        fail(e)
+        return redirect(url_for('.management'))     
+    success(ret)
+    return redirect(url_for('.management')) 
+
+@mod.route('/update_solver/<int:id>', methods=['GET', 'POST'])
+@login_required
+def update_solver(id):
+    '''
+    update solver
+    '''
+    solver=UserBiz.get_user_by_id(id);
+    form = AccountForm();
+    if not form.validate_on_submit():
+        return render_template('admin/update.html',form=form,id=id,type="SOLVER")
+    try:
+        solver.passwd = form.passwd.data
+        ret = UserBiz.solver_commit_update(solver=solver)
+    except DaixieError as e:
+        fail(e)
+        return redirect(url_for('.management'))     
+    success(ret)
+    return redirect(url_for('.management')) 
+
 @mod.route('/add_cs', methods=['GET', 'POST'])
 @mod.route('/delete_cs/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -88,7 +127,7 @@ def delete_cs(id):
     '''
     cs = AdminBiz.get_admin_by_id(id)
     try:
-        ret = AdminBiz.delete_CS(cs)
+        ret = AdminBiz.delete_CS(cs=cs)
     except DaixieError as e:
         fail(e) 
     success(ret)
@@ -102,7 +141,6 @@ def delete_solver(id):
     delete cs
     '''
     solver = UserBiz.get_user_by_id(id)
-    print "hhhhhhhhhhhhhhhhhhhhhh"
     try:
         ret = UserBiz.delete_solver(solver)
         success(ret)
@@ -111,10 +149,13 @@ def delete_solver(id):
     
     return redirect(url_for('.management'))
 
-
 class RegisterForm(Form):
     user_choices = [('0', u'CS'), ('1', u'SOLVER')]
     user_type=SelectField(u'性别', choices=user_choices, default='0')
     email = TextField(u'邮箱地址*', validators=[DataRequired(), Email()])
+    passwd = PasswordField(u'密码*', validators=[DataRequired(),Regexp('[\w\d-]{5,20}', message=u'5-20位')])
+    passwd_confirm = PasswordField(u'确认密码*', validators=[DataRequired(), EqualTo('passwd', message=u'密码不一致')])
+
+class AccountForm(Form):
     passwd = PasswordField(u'密码*', validators=[DataRequired(),Regexp('[\w\d-]{5,20}', message=u'5-20位')])
     passwd_confirm = PasswordField(u'确认密码*', validators=[DataRequired(), EqualTo('passwd', message=u'密码不一致')])

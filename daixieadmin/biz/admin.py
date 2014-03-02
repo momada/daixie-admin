@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from hashlib import md5
 
 from flask.ext.login import login_user, logout_user
 
@@ -6,7 +7,7 @@ from daixieadmin.data.db import db_session
 from daixieadmin.models.admin import Admin
 
 from daixieadmin.utils.error_type import USER_DUPLICATE, USER_LOGOUT_OK, \
-    USER_NOT_EXIST, USER_LOGIN_OK, USER_LOGOUT_FAIL, CS_DELETE_OK, CS_ADD_OK
+    USER_NOT_EXIST, USER_LOGIN_OK, USER_LOGOUT_FAIL, CS_DELETE_OK, CS_ADD_OK, CS_UPDATE_OK
 from daixieadmin.utils.error import DaixieError
 
 class AdminBiz:
@@ -19,6 +20,17 @@ class AdminBiz:
     def get_admin_by_email(email):
         cs = db_session.query(Admin).filter_by(email=email).first()
         return cs
+
+    @staticmethod
+    def cs_commit_update(cs):
+        try:
+            cs.passwd = md5(cs.passwd).hexdigest()
+            db_session.merge(cs)
+            db_session.commit()
+        except:
+            db_session.rollback()
+            raise
+        return CS_UPDATE_OK
 
     # @staticmethod
     # def register(cs):
