@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from hashlib import md5
 
 from flask.ext.login import login_user, logout_user
 
@@ -7,7 +8,7 @@ from daixieadmin.models.user import User
 
 from daixieadmin.utils.error_type import USER_DUPLICATE, USER_REGISTER_OK, USER_LOGOUT_OK, \
     USER_ACTIVATE_OK, USER_NOT_EXIST, USER_LOGIN_OK, USER_LOGOUT_FAIL, EDIT_USER_PROFILE_OK, \
-    EDIT_USER_PROFILE_FAIL,SOLVER_DELETE_OK
+    EDIT_USER_PROFILE_FAIL,SOLVER_DELETE_OK,SOLVER_UPDATE_OK
 from daixieadmin.utils.error import DaixieError
 
 class UserBiz:
@@ -25,6 +26,17 @@ class UserBiz:
     def get_user_by_email(email):
         user = db_session.query(User).filter_by(email=email).first()
         return user
+
+    @staticmethod
+    def solver_commit_update(solver):
+        try:
+            solver.passwd = md5(solver.passwd).hexdigest()
+            db_session.merge(solver)
+            db_session.commit()
+        except:
+            db_session.rollback()
+            raise
+        return SOLVER_UPDATE_OK
 
     @staticmethod
     def register(user):

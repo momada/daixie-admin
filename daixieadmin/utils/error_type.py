@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+
+SOLVER_UPDATE_OK = u"SOLVER UPDATED SUCCESSFULLY"
+
+CS_UPDATE_OK = u"CUSTOMER_SUPPORT UPDATED SUCCESSFULLY"
+
 SOLVER_ADD_OK = u"SOLVER ADDED successfully"
 
 CS_ADD_OK = u'CS added successfully'

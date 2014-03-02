@@ -1,0 +1,44 @@
+{% extends 'layout.html' %}
+{% from 'import/tools.html' import flashed_msg, errors %}
+
+{% block title %}
+Change Password {{ config['SITE_NAME'] }}
+{% endblock title %}
+
+{% block content %}
+
+<div class="row">
+    
+    <div class="page-header">
+        <h2>登录{{ config['SITE_NAME'] }}</h2>
+    </div>
+    {% if type == "CS" %}
+    <form class="form-horizontal" id="register-form" method="post" action="{{url_for('admin.update_cs',id=id)}}">  
+    {% else %}
+      <form class="form-horizontal" id="register-form" method="post" action="{{url_for('admin.update_solver',id=id)}}">  
+    {% endif %}
+        {{ form.hidden_tag() }}
+        {{ form.csrf_token }}
+    
+        <div class="form-group">
+                <label class="col-md-3 control-label">密码</label>
+                <div class="col-md-5">
+                    {{ form.passwd(class='form-control', placeholder="密码") }}
+                </div>
+        </div>
+        <div class="form-group">
+                <label class="col-md-3 control-label">确认密码</label>
+                <div class="col-md-5">
+                    {{ form.passwd_confirm(class='form-control', placeholder="确认密码") }}
+                </div>
+            </div>
+        <div class="form-group">
+            <div class="col-md-5 col-md-offset-2">
+                <input class="btn btn-orange" type="submit" value="add"/>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+{% endblock content %}
