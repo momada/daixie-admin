@@ -1,4 +1,6 @@
 {% extends 'layout.html' %}
+{% from 'import/tools.html' import flashed_msg, errors,captcha %}
+{% from 'import/tools.html' import error %}
 
 {% block content %}
 
@@ -14,30 +16,35 @@
                 {{ form.user_email.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
                     {{ form.user_email(class='form-control') }}
+                    {{ error(form.errors['user_email']) }}
                 </div>
             </div>
             <div class="form-group">
                 {{ form.cs_email.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
                     {{ form.cs_email(class='form-control') }}
+                    {{ error(form.errors['cs_email']) }}
                 </div>
             </div>
             <div class="form-group">
                 {{ form.solver_email.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
                     {{ form.solver_email(class='form-control') }}
+                    {{ error(form.errors['solver_email']) }}
                 </div>
             </div>
             <div class="form-group">
                 {{ form.require_time.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
                     {{ form.require_time(class='form-control') }}
+                    {{ error(form.errors['require_time']) }}
                 </div>
             </div>
             <div class="form-group">
                 {{ form.expect_time.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
                     {{ form.expect_time(class='form-control') }}
+                    {{ error(form.errors['expect_time']) }}
                 </div>
             </div>
             <div class="form-group">

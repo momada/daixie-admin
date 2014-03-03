@@ -137,12 +137,12 @@ def delete_solver(id):
 
 class RegisterForm(Form):
     user_type_choices = [('0', u'客服'), ('1', u'解题员')]
-    
+
     user_type=SelectField(u'用户类型', choices=user_type_choices, default='0')
-    email = TextField(u'邮箱地址*', validators=[DataRequired(), Email()])
-    passwd = PasswordField(u'密码*', validators=[DataRequired(),Regexp('[\w\d-]{5,20}', message=u'5-20位')])
+    email = TextField(u'邮箱地址*', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])
+    passwd = PasswordField(u'密码*', validators=[DataRequired(),Regexp('[\w\d-]{6,20}', message=u'密码必须为6-20位')])
     passwd_confirm = PasswordField(u'确认密码*', validators=[DataRequired(), EqualTo('passwd', message=u'密码不一致')])
 
 class AccountForm(Form):
-    passwd = PasswordField(u'新密码*', validators=[DataRequired(),Regexp('[\w\d-]{5,20}', message=u'5-20位')])
+    passwd = PasswordField(u'新密码*', validators=[DataRequired(),Regexp('[\w\d-]{6,20}', message=u'密码必须为6-20位')])
     passwd_confirm = PasswordField(u'确认密码*', validators=[DataRequired(), EqualTo('passwd', message=u'密码不一致')])

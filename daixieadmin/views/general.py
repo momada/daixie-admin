@@ -77,13 +77,13 @@ def daixie_rule():
     return render_template("general/daixie_rule.html")
 
 class LoginForm(Form):
-    email = TextField(u'邮箱', validators=[DataRequired(), Email()])
-    passwd = PasswordField(u'密码', validators=[DataRequired(),Regexp('[\w\d-]{5,20}')])
+    email = TextField(u'邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])
+    passwd = PasswordField(u'密码', validators=[DataRequired(),Regexp('[\w\d-]{6,20}', message=u'密码必须为6-20位')])
     auto = BooleanField(u'自动登录', default=False)
 
 class RegisterForm(Form):
-    user_choices = [('0', u'CS'), ('1', u'SOLVER')]
-    user_type=SelectField(u'性别', choices=user_choices, default='0')
-    email = TextField(u'邮箱地址*', validators=[DataRequired(), Email()])
-    passwd = PasswordField(u'密码*', validators=[DataRequired(),Regexp('[\w\d-]{5,20}', message=u'5-20位')])
+    user_type_choices = [('0', u'客服'), ('1', u'解题员')]
+    user_type=SelectField(u'性别', choices=user_type_choices, default='0')
+    email = TextField(u'邮箱地址*', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])
+    passwd = PasswordField(u'密码*', validators=[DataRequired(),Regexp('[\w\d-]{6,20}', message=u'密码必须为6-20位')])
     passwd_confirm = PasswordField(u'确认密码*', validators=[DataRequired(), EqualTo('passwd', message=u'密码不一致')])
