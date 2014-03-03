@@ -7,6 +7,7 @@ from subprocess import call
 from re import compile
 
 from daixieadmin import app
+from werkzeug.utils import secure_filename
 
 from smtplib import *
 from email.mime.text import MIMEText
@@ -65,3 +66,17 @@ def send_email2(to,title,body):
     except Exception,e:
         print str(e)
         return False 
+
+def file_path(id):
+    folder = '%s/%s' % (app.config['DIR_RESOURCES'],id)
+    if not os.path.isdir(folder):
+        os.makedirs(folder)
+    return folder
+
+def save_file_with_order_id(id, file):
+    fname = secure_filename(file.filename)
+    path = file_path(id)
+    f.save(os.path.join(path, fname))
+
+
+

@@ -5,6 +5,7 @@ from os.path import dirname,abspath
 DIR_CUR = dirname(abspath(__file__))
 DIR_CONFS = DIR_CUR + '/../confs'
 DIR_LOGS = DIR_CUR + '/../logs'
+DIR_FILES = DIR_CUR + '/../logs'
 DIR_RESOURCES = DIR_CUR + '/resources'
 
 #global
@@ -19,7 +20,7 @@ TESTING = True
 SECRET_KEY = r"42a3e1376f8852d1c0620a3235886bcd712879a3"
 
 # db
-SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://root:@localhost/daixie?charset=utf8'
+SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://daixie:daixie2014@localhost/daixie?charset=utf8'
 SQLALCHEMY_ECHO = False
 
 # email server

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, url_for, redirect, render_template, request, abort
+from flask import Blueprint, url_for, redirect, render_template, request
 
 from flask_wtf import Form
-from wtforms import TextField, PasswordField, SelectField, BooleanField, TextAreaField
-from wtforms.validators import DataRequired, EqualTo, Length, Regexp
-from flask_wtf.file import FileField, FileAllowed, FileRequired
+from wtforms import TextField, SelectField, TextAreaField
+from wtforms.validators import DataRequired
+from flask_wtf.file import FileField, FileRequired
 
 from flask.ext.login import login_required, current_user
 
@@ -14,8 +14,10 @@ from daixieadmin.biz.user import UserBiz
 from daixieadmin.biz.admin import AdminBiz
 
 from daixieadmin.utils.error import DaixieError, fail, success
+from daixieadmin.utils.tools import save_file_with_order_id
 from daixieadmin.models.admin import Admin
 from daixieadmin.models.order import Order
+
 
 mod = Blueprint('order', __name__)
 
@@ -26,14 +28,17 @@ def create_order():
     创建订单
     '''
     form = OrderForm()
+    print "***************start create  orders"
     if not form.validate_on_submit():
         return render_template('order/create.html', form=form)
+    file_path = "/default/file"
+    print "***************hehehe"
     user = UserBiz.get_user_by_email(form.user_email.data)
     cs = AdminBiz.get_admin_by_email(form.cs_email.data)
     solver = UserBiz.get_user_by_email(form.solver_email.data)
     order = Order(user.id, cs.id, solver.id, form.require_time.data, form.expect_time.data, 
         form.title.data, form.expect_hour.data, form.order_price.data, form.grade.data, 
-        form.description.data, form.supp_info.data, form.extra_item.data, form.extra_money.data, 
+        form.description.data, file_path, form.extra_item.data, form.extra_money.data, 
         form.log.data)
     print "***************"
     print order
@@ -42,6 +47,11 @@ def create_order():
     except DaixieError as e:
         fail(e)
         return render_template('order/create.html', form=form)
+    order_id = order.id
+    file = request.files["supp_info"]
+    file_path = save_file_with_order_id(order_id, file)
+    order.supp_info = file_path
+    order.edit_order(order)
     success(ret)
     return redirect(url_for('.my_list'))
 
@@ -157,7 +167,7 @@ class OrderForm(Form):
     expect_time = TextField(u'预计时间')
     title = TextField(u'标题')
     description = TextField(u'描述')
-    supp_info = TextField(u'辅助信息')
+    supp_info= FileField(u'supp info',validators=[FileRequired(u"pls choose file")])
     log = TextAreaField(u'日志')
     grade = TextField(u'订单级别')
     expect_hour = TextField(u'预计耗时')
