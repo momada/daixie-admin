@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 
 from os import makedirs
 from os.path import splitext, join, isdir, sep, altsep
@@ -12,6 +13,8 @@ from werkzeug.utils import secure_filename
 from smtplib import *
 from email.mime.text import MIMEText
 import base64, hashlib 
+
+
 
 def pretty_email(email):
     postfix = email.split('@')[1]
@@ -74,9 +77,14 @@ def file_path(id):
     return folder
 
 def save_file_with_order_id(id, file):
-    fname = secure_filename(file.filename)
+    
+    filename = secure_filename(file.filename)
     path = file_path(id)
-    f.save(os.path.join(path, fname))
+    file.save(os.path.join(path, filename))
+    return os.path.join(path, filename)
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
 

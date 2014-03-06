@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, url_for, redirect, render_template, request
+from flask import Blueprint, url_for, redirect, render_template, request,send_from_directory,make_response
 
 from flask_wtf import Form
+
+from werkzeug.utils import secure_filename
 
 from wtforms import TextField, FloatField, SelectField, DateTimeField, TextAreaField, DateField
 from wtforms.validators import DataRequired, EqualTo, Length, Regexp, Email
@@ -18,7 +20,8 @@ from daixieadmin.utils.error import DaixieError, fail, success
 from daixieadmin.utils.tools import save_file_with_order_id
 from daixieadmin.models.admin import Admin
 from daixieadmin.models.order import Order
-
+from daixieadmin import app
+from daixieadmin.views import j_login_required
 
 mod = Blueprint('order', __name__)
 
@@ -28,13 +31,20 @@ def create_order():
     '''
     创建订单
     '''
+   # filename = "readme.txt" ######
     form = OrderForm()
     print "***************start create  orders"
     if not form.validate_on_submit():
         print form.errors
         return render_template('order/create.html', form=form)
-    file_path = "/default/file"
-    print "***************hehehe"
+
+    file = request.files['supp_info']    
+    if not allowed_file(file.filename):
+        fail("file type error")
+        print "***************hehehe"
+        return redirect(url_for('.create_order'))
+
+    file_path = "default_file_name"
     user = UserBiz.get_user_by_email(form.user_email.data)
     cs = AdminBiz.get_admin_by_email(form.cs_email.data)
     solver = UserBiz.get_user_by_email(form.solver_email.data)
@@ -42,19 +52,35 @@ def create_order():
         form.title.data, form.expect_hour.data, form.order_price.data, form.grade.data, 
         form.description.data, file_path, form.extra_item.data, form.extra_money.data, 
         form.log.data)
-
     try:
         ret = OrderBiz.create_order(order)
     except DaixieError as e:
         fail(e)
         return render_template('order/create.html', form=form)
     order_id = order.id
-    file = request.files["supp_info"]
-    file_path = save_file_with_order_id(order_id, file)
-    order.supp_info = file_path
-    order.edit_order(order)
+    save_file_with_order_id(order_id, file)
+    order.supp_info = secure_filename(file.filename)
+    OrderBiz.edit_order(order)
     success(ret)
     return redirect(url_for('.my_list'))
+
+@mod.route('/download/<int:id>', methods=['POST', 'GET'])
+@j_login_required
+def download_file(id):
+    order = OrderBiz.get_order_by_id(id)
+    filename = order.supp_info
+    path = app.config['DIR_RESOURCES'] +'/'+ str(id) +'/'
+    return send_from_directory(path, filename, as_attachment=True)
+    # file = open(filename,'r')
+    # history_file = open(history_filename, 'r')
+    # data = file.read()
+    # response = make_response(data)
+    # response.headers["Content-Disposition"] = "attatchment; filename=history.zip"
+    # return response
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
 @mod.route('/my_list')
 @mod.route('/my_list/<int:page>')
@@ -103,16 +129,23 @@ def edit_order_for_cs(id):
     form.log.data = ''
     if not form.validate_on_submit():
         return render_template('order/edit_order_for_cs.html', form=form, id=id, order=order)
+    
+    file = request.files['supp_info']    
+    if not allowed_file(file.filename):
+        fail("file type error")
+        return redirect(url_for('.create_order'))
+
     order.status = form.status.data
     order.expect_time = form.expect_time.data
     order.title = form.title.data
     order.description = form.description.data
-    order.supp_info = form.supp_info.data
     order.log = order.log+form.log.data
     order.grade = form.grade.data
     order.expect_hour = form.expect_hour.data
     order.actual_hour = form.actual_hour.data if form.actual_hour.data == '' else None
 
+    save_file_with_order_id(id, file)
+    order.supp_info = secure_filename(file.filename)
     #修改订单
     try:
         ret = OrderBiz.edit_order(order)
@@ -130,6 +163,11 @@ def edit_order_for_admin(id):
     if not form.validate_on_submit():
         return render_template('order/edit_order_for_admin.html', form=form, id=id, order=order)
     
+    file = request.files['supp_info']    
+    if not allowed_file(file.filename):
+        fail("file type error")
+        return redirect(url_for('.create_order'))
+    print "hhhhhhhhhhhhhhhhhhhhhhh" + file.filename
     cs = AdminBiz.get_admin_by_email(form.cs_email.data)
     solver = UserBiz.get_user_by_email(form.solver_email.data)
 
@@ -140,7 +178,6 @@ def edit_order_for_admin(id):
     order.expect_time = form.expect_time.data
     order.title = form.title.data
     order.description = form.description.data
-    order.supp_info = form.supp_info.data
     order.log = form.log.data
     order.grade = form.grade.data
     order.expect_hour = form.expect_hour.data
@@ -148,6 +185,8 @@ def edit_order_for_admin(id):
     order.extra_item = form.extra_item.data
     order.extra_money = form.extra_money.data
 
+    save_file_with_order_id(id, file)
+    order.supp_info = secure_filename(file.filename)
     #修改订单
     try:
         ret = OrderBiz.edit_order(order)
@@ -184,7 +223,7 @@ class CSEditOrderForm(Form):
     expect_time = DateField(u'预计时间', validators=[DataRequired()])
     title = TextField(u'标题')
     description = TextField(u'描述')
-    supp_info = TextField(u'辅助信息', validators=[DataRequired()])
+    supp_info= FileField(u'辅助信息',validators=[FileRequired(u"pls choose file")])
     log = TextAreaField(u'新日志')
     grade = TextField(u'订单级别')
     expect_hour = TextField(u'预计耗时')
@@ -200,7 +239,7 @@ class AdminEditOrderForm(Form):
     expect_time = DateField(u'预计时间', validators=[DataRequired()])
     title = TextField(u'标题')
     description = TextField(u'描述')
-    supp_info = TextField(u'辅助信息', validators=[DataRequired()])
+    supp_info= FileField(u'辅助信息',validators=[FileRequired(u"pls choose file")])
     log = TextAreaField(u'日志')
     grade = TextField(u'订单级别')
     expect_hour = TextField(u'预计耗时')

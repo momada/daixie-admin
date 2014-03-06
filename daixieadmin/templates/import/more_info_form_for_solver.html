@@ -58,7 +58,7 @@
                 <label class="control-label ">描述信息</label>
               <div class="controls">
                   <span class="input-xlarge uneditable-input">
-                    {{ order.description if order.description else '无' }}
+                    <a href="">{{ order.description if order.description else '无' }}</a>
                   </span>
               </div>
               </div>
@@ -67,7 +67,7 @@
                 <label class="control-label ">辅助信息</label>
               <div class="controls">
                   <span class="input-xlarge uneditable-input">
-                    {{ order.supp_info if order.supp_info else '无'}}
+                    <a href="{{url_for('order.download_file',id=order.id)}}">{{order.supp_info if order.supp_info else '无'}}</a>
                   </span>
               </div>
               </div>
