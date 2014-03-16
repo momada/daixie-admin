@@ -72,7 +72,13 @@ def send_email2(to,title,body):
 
 def file_path(id):
     folder = '%s/%s' % (app.config['DIR_RESOURCES'],id)
-    if not os.path.isdir(folder):
+    if os.path.isdir(folder):
+        list = os.listdir(folder)
+        print list
+        for fn in list:
+            f = '%s/%s/%s' % (app.config['DIR_RESOURCES'],id,fn)
+            os.remove(f)
+    else:
         os.makedirs(folder)
     return folder
 
