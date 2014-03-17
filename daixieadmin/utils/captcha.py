@@ -6,7 +6,7 @@ import Image, ImageDraw, ImageFont, ImageFilter
 
 from flask import session
 
-from daixie import app
+from daixieadmin import app
 
 def create_captcha(
         size=(120, 30),

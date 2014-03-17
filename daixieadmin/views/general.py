@@ -33,10 +33,8 @@ def index():
     网站首页
     '''
     if current_user.is_authenticated():
-        return render_template('admin/home.html')
+        return render_template('admin/home.html', nav_home='active')
     return redirect(url_for('.login'))
-
-
 
 @mod.route('/login', methods=['GET','POST'])
 def login():
@@ -45,7 +43,7 @@ def login():
     '''
     form = LoginForm()
     if not form.validate_on_submit():
-        return render_template('general/login.html', form=form)
+        return render_template('general/login.html', form=form, nav_login='active')
     email = form.email.data
     passwd = form.passwd.data
     auto = form.auto.data
@@ -55,7 +53,7 @@ def login():
         ret = AdminBiz.admin_login(admin, auto)
     except DaixieError as e:
         fail(e)
-        return render_template('general/login.html', form=form)
+        return render_template('general/login.html', form=form, nav_login='active')
     success(ret)
     return redirect(url_for('.index'))
 

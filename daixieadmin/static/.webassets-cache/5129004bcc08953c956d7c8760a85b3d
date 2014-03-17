@@ -154,6 +154,4 @@ body {
   background: transparent;
   font-weight: normal;
   height: 34px;
-  vertical-align: middle;
-  font-size: 14px;
 }

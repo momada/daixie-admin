@@ -68,3 +68,7 @@ class AdminBiz:
     def get_all_CS():
         all_cs = db_session.query(Admin).filter(Admin.type == 'CS').all()   #pass the admin
         return all_cs
+
+    @staticmethod
+    def get_by_like(query, page=1, per_page=5):
+        return Admin.query.filter(Admin.email.contains(query)).filter_by(type=Admin.ADMIN_TYPE.CS).paginate(page, per_page)

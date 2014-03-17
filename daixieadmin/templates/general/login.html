@@ -18,14 +18,14 @@
         <div class="form-group">
             {{ form.email.label(class="col-md-2 control-label") }}
             <div class="col-md-5">
-                {{ form.email(class='form-control', type='email', required='required') }}
+                {{ form.email(class='form-control', type='email', placeholder="请输入邮箱", required='required') }}
             </div>
         </div>
 
         <div class="form-group">
             {{ form.passwd.label(class="col-md-2 control-label") }}
             <div class="col-md-5">
-                {{ form.passwd(class='form-control',placeholder="5至20个字符，支持中英文，数字，_和-") }}
+                {{ form.passwd(class='form-control', placeholder="请输入密码") }}
             </div>
         </div>
 

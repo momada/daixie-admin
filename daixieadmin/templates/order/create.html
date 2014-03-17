@@ -5,45 +5,66 @@
 {% block content %}
 
 <h1>创建新订单</h1>
-
 <div class="col-md-8 col-md-offset-2">
     <div class="row">
         <form class="form-horizontal" id="profile-form" method="post" action="{{ url_for('order.create_order') }}" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
-            
 
             <div class="form-group">
                 {{ form.user_email.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
-                    {{ form.user_email(class='form-control') }}
+                    <input 
+                    value="{{ form.user_email.data or '' }}" 
+                    data-ajax-url="{{ url_for('user.j_search_user') }}" 
+                    name="user_email" 
+                    user_type="user" 
+                    type="hidden" 
+                    class="select" 
+                    placeholder="请选择用户邮箱" 
+                    required="required">
                     {{ error(form.errors['user_email']) }}
                 </div>
             </div>
             <div class="form-group">
                 {{ form.cs_email.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
-                    {{ form.cs_email(class='form-control') }}
+                    <input 
+                    value="{{ form.cs_email.data or '' }}" 
+                    data-ajax-url="{{ url_for('admin.j_search_cs') }}" 
+                    name="cs_email" 
+                    type="hidden" 
+                    class="select" 
+                    placeholder="请选择客服邮箱" 
+                    required="required">
                     {{ error(form.errors['cs_email']) }}
                 </div>
             </div>
             <div class="form-group">
                 {{ form.solver_email.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
-                    {{ form.solver_email(class='form-control') }}
+                    <input 
+                    value="{{ form.solver_email.data or '' }}" 
+                    data-ajax-url="{{ url_for('user.j_search_user') }}" 
+                    name="solver_email" 
+                    user_type="solver" 
+                    type="hidden" 
+                    class="select" 
+                    placeholder="请选择解题员邮箱" 
+                    required="required">
                     {{ error(form.errors['solver_email']) }}
                 </div>
             </div>
             <div class="form-group">
                 {{ form.require_time.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
-                    {{ form.require_time(class='form-control') }}
+                    {{ form.require_time(class='form-control datepicker') }}
                     {{ error(form.errors['require_time']) }}
                 </div>
             </div>
             <div class="form-group">
                 {{ form.expect_time.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
-                    {{ form.expect_time(class='form-control') }}
+                    {{ form.expect_time(class='form-control datepicker') }}
                     {{ error(form.errors['expect_time']) }}
                 </div>
             </div>
@@ -113,3 +134,9 @@
 </div>
 
 {% endblock content %}
+
+{% block js %}
+<script>
+    create_order.run();
+</script>
+{% endblock js %}

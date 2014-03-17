@@ -18,12 +18,14 @@ class Admin(db.Model, UserMixin):
     email = db.Column('email', db.String(45), unique=True, nullable=False)
     passwd = db.Column('passwd', db.String(45), nullable=False)
     type = db.Column('type', db.Integer, nullable=False)
+    qq = db.Column('qq', db.String(45), nullable=False)
 
     
-    def __init__(self, email, passwd):
+    def __init__(self, email, passwd, qq=None):
         self.email = email
         self.passwd = md5(passwd).hexdigest()
         self.type = Admin.ADMIN_TYPE.CS
+        self.qq = qq
 
     @property
     def user_type(self):

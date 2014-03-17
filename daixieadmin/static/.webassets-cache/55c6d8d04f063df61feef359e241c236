@@ -150,10 +150,6 @@ body {
   height: 34px;
 }
 .select2-container .select2-choice {
-  padding: 6px 12px;
   background: transparent;
   font-weight: normal;
-  height: 34px;
-  vertical-align: middle;
-  font-size: 14px;
 }

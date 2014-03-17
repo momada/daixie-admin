@@ -24,9 +24,10 @@ class User(db.Model, UserMixin):
     nickname = db.Column('nickname', db.String(45), nullable=False)
     sex = db.Column('sex', db.Integer, nullable=False)
     description = db.Column('description', db.String(1000), nullable=False)
+    qq = db.Column('qq', db.String(45), nullable=False)
 
     
-    def __init__(self, email, passwd, type=USER_TYPE.USER, nickname=''):
+    def __init__(self, email, passwd, type=USER_TYPE.USER, nickname='', qq=None):
         self.email = email
         self.passwd = md5(passwd).hexdigest()
         self.activate = User.ACTIVATE.NO
@@ -34,6 +35,7 @@ class User(db.Model, UserMixin):
         self.nickname = nickname
         self.sex = User.SEX.MALE
         self.description = ''
+        self.qq = qq
 
     @property
     def user_type(self):

@@ -18,6 +18,7 @@ from daixieadmin.biz.admin import AdminBiz
 
 from daixieadmin.utils.error import DaixieError, fail, success
 from daixieadmin.utils.tools import save_file_with_order_id
+from daixieadmin.utils.form import User_Exist
 from daixieadmin.models.admin import Admin
 from daixieadmin.models.order import Order
 from daixieadmin import app
@@ -31,18 +32,16 @@ def create_order():
     '''
     创建订单
     '''
-   # filename = "readme.txt" ######
+
     form = OrderForm()
-    print "***************start create  orders"
     if not form.validate_on_submit():
         print form.errors
-        return render_template('order/create.html', form=form)
+        return render_template('order/create.html', form=form, nav_order_manage='active')
 
     file = request.files['supp_info']    
     if not allowed_file(file.filename):
         fail("file type error")
-        print "***************hehehe"
-        return redirect(url_for('.create_order'))
+        return render_template('order/create.html', form=form, nav_order_manage='active')
 
     file_path = "default_file_name"
     user = UserBiz.get_user_by_email(form.user_email.data)
@@ -56,7 +55,7 @@ def create_order():
         ret = OrderBiz.create_order(order)
     except DaixieError as e:
         fail(e)
-        return render_template('order/create.html', form=form)
+        return render_template('order/create.html', form=form, nav_order_manage='active')
     order_id = order.id
     save_file_with_order_id(order_id, file)
     order.supp_info = secure_filename(file.filename)
@@ -71,12 +70,6 @@ def download_file(id):
     filename = order.supp_info
     path = app.config['DIR_RESOURCES'] +'/'+ str(id) +'/'
     return send_from_directory(path, filename, as_attachment=True)
-    # file = open(filename,'r')
-    # history_file = open(history_filename, 'r')
-    # data = file.read()
-    # response = make_response(data)
-    # response.headers["Content-Disposition"] = "attatchment; filename=history.zip"
-    # return response
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -90,7 +83,7 @@ def my_list(page=1):
 	查看我的所有订单
 	'''
 	pager = OrderBiz.get_order_list_by_admin_id(current_user.id, page=1)
-	return render_template('order/list.html', order_list=pager, paginate=True)
+	return render_template('order/list.html', order_list=pager, paginate=True, nav_order_manage='active')
 
 @mod.route('/order_list')
 @mod.route('/order_list/<int:page>')
@@ -101,16 +94,16 @@ def order_list(page=1):
     '''
     pager = None
     pager = OrderBiz.get_order_list_by_pager(page)
-    return render_template('order/list.html', order_list=pager, paginate=True)
+    return render_template('order/list.html', order_list=pager, paginate=True, nav_order_manage='active')
 
 @mod.route('/more_info/<int:id>')
 @login_required
 def more_info(id):
 	order = OrderBiz.get_order_by_id(id)
 	if current_user.type == Admin.ADMIN_TYPE.CS:
-		return render_template('order/more_info_for_cs.html', order=order)
+		return render_template('order/more_info_for_cs.html', order=order, nav_order_manage='active')
 	else:
-		return render_template('order/more_info_for_admin.html', order=order)
+		return render_template('order/more_info_for_admin.html', order=order, nav_order_manage='active')
 
 @mod.route('/edit_order/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -128,7 +121,7 @@ def edit_order_for_cs(id):
     form = CSEditOrderForm(obj=order)
     form.log.data = ''
     if not form.validate_on_submit():
-        return render_template('order/edit_order_for_cs.html', form=form, id=id, order=order)
+        return render_template('order/edit_order_for_cs.html', form=form, id=id, order=order, nav_order_manage='active')
     
     file = request.files['supp_info']    
     if not allowed_file(file.filename):
@@ -161,13 +154,12 @@ def edit_order_for_admin(id):
     order = OrderBiz.get_order_by_id(id)
     form = AdminEditOrderForm(obj=order)
     if not form.validate_on_submit():
-        return render_template('order/edit_order_for_admin.html', form=form, id=id, order=order)
+        return render_template('order/edit_order_for_admin.html', form=form, id=id, order=order, nav_order_manage='active')
     
     file = request.files['supp_info']    
     if not allowed_file(file.filename):
         fail("file type error")
         return redirect(url_for('.create_order'))
-    print "hhhhhhhhhhhhhhhhhhhhhhh" + file.filename
     cs = AdminBiz.get_admin_by_email(form.cs_email.data)
     solver = UserBiz.get_user_by_email(form.solver_email.data)
 
@@ -199,7 +191,7 @@ def edit_order_for_admin(id):
 class OrderForm(Form):
     status_choices = [('0', u'已创建‘'), ('1', u'已付款'), ('2', u'解决中'), ('3', u'已完成')]
 
-    user_email = TextField(u'用户邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])
+    user_email = TextField(u'用户邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址'), User_Exist()])
     cs_email = TextField(u'客服邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])
     solver_email = TextField(u'解题员邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])
     status = SelectField(u'订单状态', choices=status_choices, default='0')

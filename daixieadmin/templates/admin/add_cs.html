@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<div class="col-md-8 col-md-offset-2">
+<div class="col-md-12">
   <div class="row">
       <form class="form-horizontal col-md-offset-2" method="post" action="{{ url_for('admin.add_cs') }}">
         {{ form.hidden_tag() }}
@@ -12,7 +12,7 @@
           <div class="form-group">
                 <label class="col-md-3 control-label">用户类型</label>
               <div class="col-md-5">
-                  {{ form.user_type(class='form-control',  placeholder='type',required='required') }}
+                  {{ form.user_type(class='form-control', placeholder='type', required='required') }}
                   {{ error(form.errors['user_type']) }}
               </div>
           </div>
@@ -37,6 +37,14 @@
               <div class="col-md-5">
                   {{ form.passwd_confirm(class='form-control', placeholder="确认密码") }}
                   {{ error(form.errors['passwd_confirm']) }}
+              </div>
+          </div>
+
+          <div class="form-group">
+              <label class="col-md-3 control-label">QQ</label>
+              <div class="col-md-5">
+                  {{ form.qq(class='form-control', placeholder='QQ号', required='required') }}
+                  {{ error(form.errors['qq']) }}
               </div>
           </div>
 

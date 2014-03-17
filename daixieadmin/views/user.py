@@ -7,10 +7,13 @@ from wtforms import TextField, PasswordField, SelectField, BooleanField, TextAre
 from wtforms.validators import DataRequired, Email, EqualTo, Length, Regexp
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 
+from flask.ext.sqlalchemy import Pagination
 from flask.ext.login import login_required, current_user
 
-from daixie.biz.user import UserBiz
-from daixie.utils.error import DaixieError, fail, success
+from daixieadmin.biz.user import UserBiz
+from daixieadmin.models.user import User
+from daixieadmin.utils.error import DaixieError, fail, success, j_ok, j_err
+from daixieadmin.utils.http import get_arg
 
 mod = Blueprint('user', __name__)
 
@@ -40,6 +43,35 @@ def profile():
 	except DaixieError as e:
 		fail(e)
 	return redirect(url_for('.profile'))
+
+@mod.route('/users', methods=['GET'])
+@login_required
+def j_search_user():
+	email = request.args.get('email', '')
+	query = request.args.get('query', '')
+	page = get_arg('page', 1)
+	type = request.args.get('type', '')
+
+	if(type == 'user'):
+		type = User.USER_TYPE.USER
+	elif type == 'solver':
+		type = User.USER_TYPE.SOLVER
+
+	try:
+		if email:
+			user = UserBiz.get_user_by_email(email, type)
+			users_pager = Pagination(None, 1, 1, 1, [user])
+		else:
+			users_pager = UserBiz.get_by_like(query, type, page, per_page=10)
+	except DaixieError as e:
+		return j_err(e)
+
+	users = [{
+	'id': user.email,
+	'text': user.email
+	} for user in users_pager.items if user]
+
+	return j_ok(u'搜索成功', items=users, pages=users_pager.pages)
 
 class ProfileForm(Form):
 	sex_choices = [('0', u'男'), ('1', u'女')]

@@ -23,8 +23,13 @@ class UserBiz:
         return all_solver
 
     @staticmethod
-    def get_user_by_email(email):
-        user = db_session.query(User).filter_by(email=email).first()
+    def get_user_by_email(email, type=None):
+        if not type:
+            print '**********111'
+            user = db_session.query(User).filter_by(email=email).first()
+        else:
+            print '**********222'
+            user = db_session.query(User).filter_by(email=email, type=type).first()
         return user
 
     @staticmethod
@@ -96,3 +101,7 @@ class UserBiz:
         except:
             raise DaixieError(EDIT_USER_PROFILE_FAIL)
         return EDIT_USER_PROFILE_OK
+
+    @staticmethod
+    def get_by_like(query, type, page=1, per_page=5):
+        return User.query.filter(User.email.contains(query)).filter_by(type=type).paginate(page, per_page)
