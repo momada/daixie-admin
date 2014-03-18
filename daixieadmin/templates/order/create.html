@@ -11,7 +11,7 @@
             {{ form.hidden_tag() }}
 
             <div class="form-group">
-                {{ form.user_email.label(class="col-md-2 control-label") }}
+                {{ form.user_email.label(class="col-md-3 control-label") }}
                 <div class="col-md-5">
                     <input 
                     value="{{ form.user_email.data or '' }}" 
@@ -26,7 +26,7 @@
                 </div>
             </div>
             <div class="form-group">
-                {{ form.cs_email.label(class="col-md-2 control-label") }}
+                {{ form.cs_email.label(class="col-md-3 control-label") }}
                 <div class="col-md-5">
                     <input 
                     value="{{ form.cs_email.data or '' }}" 
@@ -40,7 +40,7 @@
                 </div>
             </div>
             <div class="form-group">
-                {{ form.solver_email.label(class="col-md-2 control-label") }}
+                {{ form.solver_email.label(class="col-md-3 control-label") }}
                 <div class="col-md-5">
                     <input 
                     value="{{ form.solver_email.data or '' }}" 
@@ -55,77 +55,85 @@
                 </div>
             </div>
             <div class="form-group">
-                {{ form.require_time.label(class="col-md-2 control-label") }}
+                {{ form.require_time.label(class="col-md-3 control-label") }}
                 <div class="col-md-5">
                     {{ form.require_time(class='form-control datepicker') }}
                     {{ error(form.errors['require_time']) }}
                 </div>
             </div>
             <div class="form-group">
-                {{ form.expect_time.label(class="col-md-2 control-label") }}
+                {{ form.expect_time.label(class="col-md-3 control-label") }}
                 <div class="col-md-5">
                     {{ form.expect_time(class='form-control datepicker') }}
                     {{ error(form.errors['expect_time']) }}
                 </div>
             </div>
             <div class="form-group">
-                {{ form.title.label(class="col-md-2 control-label") }}
+                {{ form.title.label(class="col-md-3 control-label") }}
                 <div class="col-md-5">
                     {{ form.title(class='form-control') }}
+                    {{ error(form.errors['title']) }}
                 </div>
             </div>
             <div class="form-group">
-                {{ form.expect_hour.label(class="col-md-2 control-label") }}
+                {{ form.expect_hour.label(class="col-md-3 control-label") }}
                 <div class="col-md-5">
                     {{ form.expect_hour(class='form-control') }}
+                    {{ error(form.errors['expect_hour']) }}
                 </div>
             </div>
             <div class="form-group">
-                {{ form.grade.label(class="col-md-2 control-label") }}
+                {{ form.grade.label(class="col-md-3 control-label") }}
                 <div class="col-md-5">
                     {{ form.grade(class='form-control') }}
+                    {{ error(form.errors['grade']) }}
                 </div>
             </div>
             <div class="form-group">
-                {{ form.order_price.label(class="col-md-2 control-label") }}
+                {{ form.expect_order_price.label(class="col-md-3 control-label") }}
                 <div class="col-md-5">
-                    {{ form.order_price(class='form-control') }}
+                    {{ form.expect_order_price(class='form-control') }}
+                    {{ error(form.errors['expect_order_price']) }}
                 </div>
             </div>
             <div class="form-group">
-                {{ form.description.label(class="col-md-2 control-label") }}
+                {{ form.description.label(class="col-md-3 control-label") }}
                 <div class="col-md-5">
                     {{ form.description(class='form-control') }}
+                    {{ error(form.errors['description']) }}
                 </div>
             </div>
             <div class="form-group">
-                {{ form.supp_info.label(class="col-md-2 control-label") }}
+                {{ form.supp_info.label(class="col-md-3 control-label") }}
                 <div class="col-md-5">
                     {{ form.supp_info }}
                      {{ error(form.errors['supp_info']) }}
                 </div>
             </div>
             <div class="form-group">
-                {{ form.extra_item.label(class="col-md-2 control-label") }}
+                {{ form.extra_item.label(class="col-md-3 control-label") }}
                 <div class="col-md-5">
                     {{ form.extra_item(class='form-control') }}
+                    {{ error(form.errors['extra_item']) }}
                 </div>
             </div>
             <div class="form-group">
-                {{ form.extra_money.label(class="col-md-2 control-label") }}
+                {{ form.extra_money.label(class="col-md-3 control-label") }}
                 <div class="col-md-5">
                     {{ form.extra_money(class='form-control') }}
+                    {{ error(form.errors['extra_money']) }}
                 </div>
             </div>
             <div class="form-group">
-                {{ form.log.label(class="col-md-2 control-label") }}
+                {{ form.log.label(class="col-md-3 control-label") }}
                 <div class="col-md-5">
                     {{ form.log(class='form-control', style="height:150px;resize:none;") }}
+                    {{ error(form.errors['log']) }}
                 </div>
             </div>
 
             <div class="form-group">
-                <div class="col-md-5 col-md-offset-2">
+                <div class="col-md-5 col-md-offset-3">
                     <input class="btn btn-orange" type="submit" value="提交"/>
                 </div>
             </div>

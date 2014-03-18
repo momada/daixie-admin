@@ -1,5 +1,8 @@
 {% extends 'layout.html' %}
 
+{% from 'import/tools.html' import flashed_msg, errors %}
+{% from 'import/tools.html' import error %}
+
 {% block content %}
 
 <h1>修改订单信息</h1>
@@ -26,12 +29,14 @@
                 {{ form.cs_email.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
                     {{ form.cs_email(class='form-control') }}
+                    {{ error(form.errors['cs_email']) }}
                 </div>
             </div>
             <div class="form-group">
                 {{ form.solver_email.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
                     {{ form.solver_email(class='form-control') }}
+                    {{ error(form.errors['solver_email']) }}
                 </div>
             </div>
             <div class="form-group">
@@ -44,80 +49,108 @@
                 {{ form.status.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
                     {{ form.status(class='form-control') }}
+                    {{ error(form.errors['status']) }}
                 </div>
             </div>
             <div class="form-group">
                 {{ form.require_time.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
                     {{ form.require_time(class='form-control') }}
+                    {{ error(form.errors['require_time']) }}
                 </div>
             </div>
             <div class="form-group">
                 {{ form.expect_time.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
                     {{ form.expect_time(class='form-control') }}
+                    {{ error(form.errors['expect_time']) }}
                 </div>
             </div>
             <div class="form-group">
                 {{ form.title.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
                     {{ form.title(class='form-control') }}
+                    {{ error(form.errors['title']) }}
                 </div>
             </div>
             <div class="form-group">
                 {{ form.description.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
                     {{ form.description(class='form-control') }}
+                    {{ error(form.errors['description']) }}
                 </div>
             </div>
             <div class="form-group">
                 {{ form.supp_info.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
                     {{ form.supp_info() }}
+                    {{ error(form.errors['supp_info']) }}
                 </div>
             </div>
             <div class="form-group">
                 {{ form.log.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
                     {{ form.log(class='form-control', style="height:150px;resize:none;") }}
+                    {{ error(form.errors['log']) }}
                 </div>
             </div>
             <div class="form-group">
                 {{ form.grade.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
                     {{ form.grade(class='form-control') }}
+                    {{ error(form.errors['grade']) }}
                 </div>
             </div>
             <div class="form-group">
                 {{ form.expect_hour.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
                     {{ form.expect_hour(class='form-control') }}
+                    {{ error(form.errors['expect_hour']) }}
                 </div>
             </div>
             <div class="form-group">
                 {{ form.actual_hour.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
                     {{ form.actual_hour(class='form-control') }}
+                    {{ error(form.errors['actual_hour']) }}
                 </div>
             </div>
             <div class="form-group">
                 {{ form.extra_item.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
                     {{ form.extra_item(class='form-control') }}
+                    {{ error(form.errors['extra_item']) }}
                 </div>
             </div>
             <div class="form-group">
                 {{ form.extra_money.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
                     {{ form.extra_money(class='form-control') }}
+                    {{ error(form.errors['extra_money']) }}
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-md-2 control-label">订单价格</div>
+                <div class="col-md-2 control-label">预计订单价格</div>
                 <div class="col-md-5">
-                    <div class="form-control">{{order.order_price}}</div>
+                    <div class="form-control">{{order.expect_order_price}}</div>
                 </div>
             </div>
+            {% if order.actual_order_price %}
+            <div class="form-group">
+                <div class="col-md-2 control-label">实际订单价格</div>
+                <div class="col-md-5">
+                    <div class="form-control">{{order.actual_order_price}}</div>
+                </div>
+            </div>
+            {% else %}
+            <div class="form-group">
+                {{ form.actual_order_price.label(class="col-md-2 control-label") }}
+                <div class="col-md-5">
+                    {{ form.actual_order_price(class='form-control') }}
+                    {{ error(form.errors['actual_order_price']) }}
+                </div>
+            </div>
+            {% endif %}
             <div class="form-group">
                 <div class="col-md-5 col-md-offset-2">
                     <input class="btn btn-orange" type="submit" value="提交"/>

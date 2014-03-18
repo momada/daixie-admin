@@ -48,9 +48,9 @@ def create_order():
     cs = AdminBiz.get_admin_by_email(form.cs_email.data)
     solver = UserBiz.get_user_by_email(form.solver_email.data)
     order = Order(user.id, cs.id, solver.id, form.require_time.data, form.expect_time.data, 
-        form.title.data, form.expect_hour.data, form.order_price.data, form.grade.data, 
-        form.description.data, file_path, form.extra_item.data, form.extra_money.data, 
-        form.log.data)
+        form.title.data, form.expect_hour.data, form.expect_order_price.data, 
+        form.actual_order_price.data, form.grade.data, form.description.data, file_path, 
+        form.extra_item.data, form.extra_money.data, form.log.data)
     try:
         ret = OrderBiz.create_order(order)
     except DaixieError as e:
@@ -124,9 +124,6 @@ def edit_order_for_cs(id):
         return render_template('order/edit_order_for_cs.html', form=form, id=id, order=order, nav_order_manage='active')
     
     file = request.files['supp_info']    
-    if not allowed_file(file.filename):
-        fail("file type error")
-        return redirect(url_for('.create_order'))
 
     order.status = form.status.data
     order.expect_time = form.expect_time.data
@@ -137,8 +134,10 @@ def edit_order_for_cs(id):
     order.expect_hour = form.expect_hour.data
     order.actual_hour = form.actual_hour.data if form.actual_hour.data == '' else None
 
-    save_file_with_order_id(id, file)
-    order.supp_info = secure_filename(file.filename)
+    if file:
+        save_file_with_order_id(id, file)
+        order.supp_info = secure_filename(file.filename)
+
     #修改订单
     try:
         ret = OrderBiz.edit_order(order)
@@ -157,9 +156,7 @@ def edit_order_for_admin(id):
         return render_template('order/edit_order_for_admin.html', form=form, id=id, order=order, nav_order_manage='active')
     
     file = request.files['supp_info']    
-    if not allowed_file(file.filename):
-        fail("file type error")
-        return redirect(url_for('.create_order'))
+    
     cs = AdminBiz.get_admin_by_email(form.cs_email.data)
     solver = UserBiz.get_user_by_email(form.solver_email.data)
 
@@ -176,9 +173,12 @@ def edit_order_for_admin(id):
     order.actual_hour = form.actual_hour.data
     order.extra_item = form.extra_item.data
     order.extra_money = form.extra_money.data
+    order.actual_order_price = form.actual_order_price.data
 
-    save_file_with_order_id(id, file)
-    order.supp_info = secure_filename(file.filename)
+    if file:
+        save_file_with_order_id(id, file)
+        order.supp_info = secure_filename(file.filename)
+
     #修改订单
     try:
         ret = OrderBiz.edit_order(order)
@@ -189,7 +189,8 @@ def edit_order_for_admin(id):
     return redirect(url_for('admin.home'))
 
 class OrderForm(Form):
-    status_choices = [('0', u'已创建‘'), ('1', u'已付款'), ('2', u'解决中'), ('3', u'已完成')]
+    status_choices = [('0', u'已创建'), ('1', u'已付款'), ('2', u'解决中'), ('3', u'已完成')]
+    grade_choices = [('0', u'产品A'), ('1', u'产品B'), ('2', u'产品C'), ('3', u'产品D')]
 
     user_email = TextField(u'用户邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址'), User_Exist()])
     cs_email = TextField(u'客服邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])
@@ -199,30 +200,33 @@ class OrderForm(Form):
     expect_time = DateField(u'预计时间', validators=[DataRequired()])
     title = TextField(u'标题', validators=[DataRequired()])
     description = TextAreaField(u'描述')
-    supp_info= FileField(u'辅助信息',validators=[FileRequired(u"pls choose file")])
+    supp_info= FileField(u'辅助信息',validators=[FileRequired(u"请选择文件")])
     log = TextAreaField(u'日志')
-    grade = TextField(u'订单级别')
+    grade = SelectField(u'订单级别', choices=grade_choices, default='0')
     expect_hour = FloatField(u'预计耗时')
     actual_hour = FloatField(u'实际耗时')
     extra_item = TextField(u'其他事项')
     extra_money = FloatField(u'其他金额')
-    order_price = FloatField(u'订单价格')
+    expect_order_price = FloatField(u'预计订单价格')
+    actual_order_price = FloatField(u'实际订单价格')
 
 class CSEditOrderForm(Form):
-    status_choices = [('0', u'已创建‘'), ('1', u'已付款'), ('2', u'解决中'), ('3', u'已完成')]
+    status_choices = [('0', u'已创建'), ('1', u'已付款'), ('2', u'解决中'), ('3', u'已完成')]
+    grade_choices = [('0', u'产品A'), ('1', u'产品B'), ('2', u'产品C'), ('3', u'产品D')]
 
     status = SelectField(u'订单状态', choices=status_choices, default='0')
     expect_time = DateField(u'预计时间', validators=[DataRequired()])
     title = TextField(u'标题')
     description = TextField(u'描述')
-    supp_info= FileField(u'辅助信息',validators=[FileRequired(u"pls choose file")])
+    supp_info= FileField(u'辅助信息')
     log = TextAreaField(u'新日志')
-    grade = TextField(u'订单级别')
+    grade = SelectField(u'订单级别', choices=grade_choices, default='0')
     expect_hour = TextField(u'预计耗时')
     actual_hour = TextField(u'实际耗时')
 
 class AdminEditOrderForm(Form):
-    status_choices = [('0', u'已创建‘'), ('1', u'已付款'), ('2', u'解决中'), ('3', u'已完成')]
+    status_choices = [('0', u'已创建'), ('1', u'已付款'), ('2', u'解决中'), ('3', u'已完成')]
+    grade_choices = [('0', u'产品A'), ('1', u'产品B'), ('2', u'产品C'), ('3', u'产品D')]
 
     cs_email = TextField(u'客服邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])
     solver_email = TextField(u'解题员邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])
@@ -231,10 +235,11 @@ class AdminEditOrderForm(Form):
     expect_time = DateField(u'预计时间', validators=[DataRequired()])
     title = TextField(u'标题')
     description = TextField(u'描述')
-    supp_info= FileField(u'辅助信息',validators=[FileRequired(u"pls choose file")])
+    supp_info= FileField(u'辅助信息')
     log = TextAreaField(u'日志')
-    grade = TextField(u'订单级别')
+    grade = SelectField(u'订单级别', choices=grade_choices, default='0')
     expect_hour = TextField(u'预计耗时')
     actual_hour = TextField(u'实际耗时')
     extra_item = TextField(u'其他事项')
     extra_money = TextField(u'其他金额')
+    actual_order_price = TextField(u'实际订单价格')

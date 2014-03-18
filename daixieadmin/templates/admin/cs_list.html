@@ -22,9 +22,7 @@
           <td>          
                <a class="btn btn-warning" href="{{url_for('admin.delete_cs', id=cs.id)}}">
                 删除</a>
-          </td>
-          <td>
-              <a class="btn btn-info" href="{{url_for('admin.update_cs',id=cs.id)}}">修改</a>
+                <a class="btn btn-info" href="{{url_for('admin.update_cs',id=cs.id)}}">修改</a>           
           </td>
       </tr>
       {% endfor %}
@@ -38,9 +36,7 @@
             <td>    
                  <a class="btn btn-warning" href="{{url_for('admin.delete_solver', id=solver.id)}}">
                   删除</a>
-            </td>
-            <td>
-                <a class="btn btn-info" href="{{url_for('admin.update_solver',id=solver.id)}}">修改</a>
+                  <a class="btn btn-info" href="{{url_for('admin.update_solver',id=solver.id)}}">修改</a>
             </td>
         </tr>
       {% endfor %}

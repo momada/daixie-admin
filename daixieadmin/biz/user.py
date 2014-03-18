@@ -25,10 +25,8 @@ class UserBiz:
     @staticmethod
     def get_user_by_email(email, type=None):
         if not type:
-            print '**********111'
             user = db_session.query(User).filter_by(email=email).first()
         else:
-            print '**********222'
             user = db_session.query(User).filter_by(email=email, type=type).first()
         return user
 

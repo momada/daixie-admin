@@ -146,7 +146,7 @@ def j_search_cs():
 
     try:
         if email:
-            cs = AdminBiz.get_user_by_email(email)
+            cs = AdminBiz.get_cs_by_email(email)
             cs_pager = Pagination(None, 1, 1, 1, [cs])
         else:
             cs_pager = AdminBiz.get_by_like(query, page, per_page=10)
