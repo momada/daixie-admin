@@ -7,7 +7,7 @@ DIR_CONFS = DIR_CUR + '/../confs'
 DIR_LOGS = DIR_CUR + '/../logs'
 DIR_FILES = DIR_CUR + '/../logs'
 DIR_RESOURCES = DIR_CUR + '/resources/supp_info'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'doc', 'docx', 'ppt', 'pptx','zip','rar'])
+ALLOWED_EXTENSIONS = set(['tar','zip','rar','gz','7z','gzip','gunzip','.tar.gz','.bz2','.tgz'])
 
 #global
 PORT = 6667

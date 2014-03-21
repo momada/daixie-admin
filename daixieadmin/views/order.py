@@ -106,12 +106,12 @@ def order_list(page=1):
 @mod.route('/more_info/<int:id>')
 @login_required
 def more_info(id):
-	order = OrderBiz.get_order_by_id(id)
-	if current_user.type == Admin.ADMIN_TYPE.CS:
-		return render_template('order/more_info_for_cs.html', order=order)
-	else:
-		return render_template('order/more_info_for_admin.html', order=order)
-
+    order = OrderBiz.get_order_by_id(id)
+    if current_user.type == Admin.ADMIN_TYPE.CS:
+        return render_template('order/more_info_for_cs.html', order=order)
+    else:
+        return render_template('order/more_info_for_admin.html', order=order)
+        
 @mod.route('/edit_order/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_order(id):
@@ -230,6 +230,12 @@ class CSEditOrderForm(Form):
     actual_hour = TextField(u'实际耗时')
 
 class AdminEditOrderForm(Form):
+    user_email = TextField(u'用户邮箱')
+    create_time = DateField(u'创建时间', validators=[DataRequired()])
+    total_money = TextField(u'订单价格')
+    order_id = TextField(u'订单编号')
+
+
     status_choices = [('0', u'已创建‘'), ('1', u'已付款'), ('2', u'解决中'), ('3', u'已完成')]
 
     cs_email = TextField(u'客服邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])
