@@ -3,6 +3,7 @@
 from daixieadmin.models.order import Order
 from daixieadmin.data.db import db_session
 from daixieadmin.utils.error import DaixieError
+from daixieadmin.biz.user import UserBiz
 
 from daixieadmin.utils.error_type import CREATE_ORDER_FAIL, CREATE_ORDER_OK, \
 ORDER_NOT_EXIST, EDIT_ORDER_OK, EDIT_ORDER_FAIL
@@ -43,6 +44,14 @@ class OrderBiz:
 		o = OrderBiz.get_order_by_id(order.id)
 		if not o:
 			raise DaixieError(ORDER_NOT_EXIST)
+
+		if o.actual_order_price is not None and order.actual_order_price:
+			try:
+				amount = float(o.expect_order_price)-float(order.actual_order_price)
+				UserBiz.recharge(o.user_id, amount*100)
+			except DaixieError as e:
+				raise e
+
 		try:
 			db_session.add(order)
 			db_session.commit()

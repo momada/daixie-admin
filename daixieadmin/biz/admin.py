@@ -75,5 +75,11 @@ class AdminBiz:
         return all_cs
 
     @staticmethod
+    def get_all_cs_qq():
+        cs_list = db_session.query(Admin).filter_by(type=Admin.ADMIN_TYPE.CS).all()
+        qq_list = list(cs.qq for cs in cs_list)
+        return dict(qq_list=qq_list)
+
+    @staticmethod
     def get_by_like(query, page=1, per_page=5):
         return Admin.query.filter(Admin.email.contains(query)).filter_by(type=Admin.ADMIN_TYPE.CS).paginate(page, per_page)

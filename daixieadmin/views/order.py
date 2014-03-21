@@ -173,7 +173,9 @@ def edit_order_for_admin(id):
     order.actual_hour = form.actual_hour.data
     order.extra_item = form.extra_item.data
     order.extra_money = form.extra_money.data
-    order.actual_order_price = form.actual_order_price.data
+
+    if not order.actual_order_price and form.actual_order_price.data != '':
+        order.actual_order_price = form.actual_order_price.data
 
     if file:
         save_file_with_order_id(id, file)

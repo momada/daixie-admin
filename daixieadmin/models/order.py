@@ -32,12 +32,12 @@ class Order(db.Model, UserMixin):
     extra_item = db.Column('extra_item', db.String)
     extra_money = db.Column('extra_money', db.String)
     expect_order_price = db.Column('expect_order_price', db.FLOAT)
-    actual_order_price = db.Column('actual_order_price', db.FLOAT)
+    actual_order_price = db.Column('actual_order_price', db.FLOAT, nullable=True)
 
 
     
     def __init__(self, user_id, cs_id, solver_id, require_time, expect_time, title, expect_hour, \
-             expect_order_price, actual_order_price, grade, description=None, supp_info=None, \
+             expect_order_price, grade, actual_order_price=None, description=None, supp_info=None, \
              extra_item=None, extra_money=None, log=''):
         self.user_id = user_id
         self.cs_id = cs_id
@@ -56,7 +56,7 @@ class Order(db.Model, UserMixin):
         self.extra_item = extra_item
         self.extra_money = extra_money
         self.expect_order_price = expect_order_price
-        self.actual_order_price = self.actual_order_price
+        self.actual_order_price = actual_order_price
 
     @property
     def user_email(self):

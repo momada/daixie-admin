@@ -53,3 +53,11 @@ ORDER_NOT_EXIST = u'订单不存在'
 EDIT_ORDER_OK = u'编辑订单成功'
 
 EDIT_ORDER_FAIL = u'编辑订单失败'
+
+RECHARGE_FAIL = u'账户充值失败'
+
+RECHARGE_SUCCESS = u'账户充值成功'
+
+REFUND_FAIL = u'账户退款失败'
+
+REFUND_SUCCESS = u'账户退款成功'

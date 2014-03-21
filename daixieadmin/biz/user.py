@@ -8,7 +8,8 @@ from daixieadmin.models.user import User
 
 from daixieadmin.utils.error_type import USER_DUPLICATE, USER_REGISTER_OK, USER_LOGOUT_OK, \
     USER_ACTIVATE_OK, USER_NOT_EXIST, USER_LOGIN_OK, USER_LOGOUT_FAIL, EDIT_USER_PROFILE_OK, \
-    EDIT_USER_PROFILE_FAIL,SOLVER_DELETE_OK,SOLVER_UPDATE_OK, SOLVER_ADD_OK
+    EDIT_USER_PROFILE_FAIL,SOLVER_DELETE_OK,SOLVER_UPDATE_OK, SOLVER_ADD_OK, RECHARGE_FAIL, \
+    RECHARGE_SUCCESS, REFUND_FAIL, REFUND_SUCCESS
 from daixieadmin.utils.error import DaixieError
 
 class UserBiz:
@@ -103,3 +104,29 @@ class UserBiz:
     @staticmethod
     def get_by_like(query, type, page=1, per_page=5):
         return User.query.filter(User.email.contains(query)).filter_by(type=type).paginate(page, per_page)
+
+    @staticmethod
+    def recharge(id, amount):
+        user = UserBiz.get_user_by_id(id)
+        if not user:
+            raise DaixieError(USER_NOT_EXIST)
+        try:
+            user.account += int(amount)
+            db_session.add(user)
+            db_session.commit()
+        except:
+            raise DaixieError(RECHARGE_FAIL)
+        return RECHARGE_SUCCESS
+
+    @staticmethod
+    def refund(id, amount):
+        user = UserBiz.get_user_by_id(id)
+        if not user:
+            raise DaixieError(USER_NOT_EXIST)
+        try:
+            user.account -= int(amount)
+            db_session.add(user)
+            db_session.commit()
+        except:
+            raise DaixieError(REFUND_FAIL)
+        return REFUND_SUCCESS
