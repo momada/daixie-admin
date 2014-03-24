@@ -6,6 +6,8 @@ from flask.ext.login import login_user, logout_user
 from daixieadmin.data.db import db_session
 from daixieadmin.models.user import User
 
+from daixieadmin.biz.transaction import TransactionBiz
+
 from daixieadmin.utils.error_type import USER_DUPLICATE, USER_REGISTER_OK, USER_LOGOUT_OK, \
     USER_ACTIVATE_OK, USER_NOT_EXIST, USER_LOGIN_OK, USER_LOGOUT_FAIL, EDIT_USER_PROFILE_OK, \
     EDIT_USER_PROFILE_FAIL,SOLVER_DELETE_OK,SOLVER_UPDATE_OK, SOLVER_ADD_OK, RECHARGE_FAIL, \
@@ -106,7 +108,7 @@ class UserBiz:
         return User.query.filter(User.email.contains(query)).filter_by(type=type).paginate(page, per_page)
 
     @staticmethod
-    def recharge(id, amount):
+    def recharge(id, amount, type, description):
         user = UserBiz.get_user_by_id(id)
         if not user:
             raise DaixieError(USER_NOT_EXIST)
@@ -114,12 +116,13 @@ class UserBiz:
             user.account += int(amount)
             db_session.add(user)
             db_session.commit()
+            TransactionBiz.create(id, amount, user.account, type, description)
         except:
             raise DaixieError(RECHARGE_FAIL)
         return RECHARGE_SUCCESS
 
     @staticmethod
-    def refund(id, amount):
+    def refund(id, amount, type, description):
         user = UserBiz.get_user_by_id(id)
         if not user:
             raise DaixieError(USER_NOT_EXIST)
@@ -127,6 +130,7 @@ class UserBiz:
             user.account -= int(amount)
             db_session.add(user)
             db_session.commit()
+            TransactionBiz.create(id, amount, user.account, type, description)
         except:
             raise DaixieError(REFUND_FAIL)
         return REFUND_SUCCESS

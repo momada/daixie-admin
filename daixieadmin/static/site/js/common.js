@@ -1,11 +1,9 @@
 jQuery(document).ready(function($) {
-    $('.datepicker').datetimepicker({
+    $('.form_datetime').datetimepicker({
         autoclose: true,
         todayHighlight: 1,
-        format:'yyyy-mm-dd',
-        startDate:new Date(),
-        daysOfWeekDisabled:[1],
-        minView:2
+        format:'yyyy-mm-dd hh:ii:00',
+        startDate:new Date()
     });
 });
 

@@ -33,10 +33,11 @@ from flask.ext.assets import Environment, Bundle
 assets = Environment(app)
 less = Bundle('site/css/common.less', filters='less,cssmin', output='gen/less.css')
 all_css = Bundle('bootstrap/css/bootstrap.min.css', 'bootstrap/css/bootstrap.theme.css',
-	'datepicker/datetimepicker.min.css', 'select2/select2.css', less, filters='cssmin', output='gen/packed.css')
+	'select2/select2.css', 'datetimepicker/css/bootstrap-datetimepicker.min.css',
+	less, filters='cssmin', output='gen/packed.css')
 all_js = Bundle('jQuery/jquery-1.10.2.min.js', 'bootstrap/js/bootstrap.min.js', 
-	'select2/select2.js', 'select2/select2.min.js', 'datepicker/datetimepicker.min.js',	
-	'site/js/common.js', filters='jspacker', output='gen/packed.js')
+	'select2/select2.js', 'select2/select2.min.js', 'site/js/common.js', 'datetimepicker/js/bootstrap-datetimepicker.min.js', 
+	'datetimepicker/locale/bootstrap-datetimepicker.zh-CN.js', filters='jspacker', output='gen/packed.js')
 
 assets.register('all_css', all_css)
 assets.register('all_js', all_js)

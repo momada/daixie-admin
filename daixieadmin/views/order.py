@@ -6,7 +6,7 @@ from flask_wtf import Form
 
 from werkzeug.utils import secure_filename
 
-from wtforms import TextField, FloatField, SelectField, DateTimeField, TextAreaField, DateField
+from wtforms import TextField, FloatField, SelectField, DateTimeField, TextAreaField, DateTimeField
 from wtforms.validators import DataRequired, EqualTo, Length, Regexp, Email
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 
@@ -198,8 +198,8 @@ class OrderForm(Form):
     cs_email = TextField(u'客服邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])
     solver_email = TextField(u'解题员邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])
     status = SelectField(u'订单状态', choices=status_choices, default='0')
-    require_time = DateField(u'要求时间', validators=[DataRequired()])
-    expect_time = DateField(u'预计时间', validators=[DataRequired()])
+    require_time = DateTimeField(u'要求时间', validators=[DataRequired()])
+    expect_time = DateTimeField(u'预计时间', validators=[DataRequired()])
     title = TextField(u'标题', validators=[DataRequired()])
     description = TextAreaField(u'描述')
     supp_info= FileField(u'辅助信息',validators=[FileRequired(u"请选择文件")])
@@ -217,7 +217,7 @@ class CSEditOrderForm(Form):
     grade_choices = [('0', u'产品A'), ('1', u'产品B'), ('2', u'产品C'), ('3', u'产品D')]
 
     status = SelectField(u'订单状态', choices=status_choices, default='0')
-    expect_time = DateField(u'预计时间', validators=[DataRequired()])
+    expect_time = DateTimeField(u'预计时间', validators=[DataRequired()])
     title = TextField(u'标题')
     description = TextField(u'描述')
     supp_info= FileField(u'辅助信息')
@@ -233,8 +233,8 @@ class AdminEditOrderForm(Form):
     cs_email = TextField(u'客服邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])
     solver_email = TextField(u'解题员邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])
     status = SelectField(u'订单状态', choices=status_choices, default='0')
-    require_time = DateField(u'要求时间', validators=[DataRequired()])
-    expect_time = DateField(u'预计时间', validators=[DataRequired()])
+    require_time = DateTimeField(u'要求时间', validators=[DataRequired()])
+    expect_time = DateTimeField(u'预计时间', validators=[DataRequired()])
     title = TextField(u'标题')
     description = TextField(u'描述')
     supp_info= FileField(u'辅助信息')

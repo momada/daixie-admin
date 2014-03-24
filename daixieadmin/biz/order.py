@@ -5,6 +5,8 @@ from daixieadmin.data.db import db_session
 from daixieadmin.utils.error import DaixieError
 from daixieadmin.biz.user import UserBiz
 
+from daixieadmin.models.transaction import Transaction
+
 from daixieadmin.utils.error_type import CREATE_ORDER_FAIL, CREATE_ORDER_OK, \
 ORDER_NOT_EXIST, EDIT_ORDER_OK, EDIT_ORDER_FAIL
 
@@ -48,7 +50,10 @@ class OrderBiz:
 		if o.actual_order_price is not None and order.actual_order_price:
 			try:
 				amount = float(o.expect_order_price)-float(order.actual_order_price)
-				UserBiz.recharge(o.user_id, amount*100)
+				if amount>0:
+					UserBiz.recharge(o.user_id, abs(amount), type=Transaction.TYPE.REFUND, description=u'根据订单最终价格将差额返还账户')
+				else:
+					UserBiz.refund(o.user_id, abs(amount), type=Transaction.TYPE.PAY, description=u'根据订单最终价格将差额从账户中扣除')
 			except DaixieError as e:
 				raise e
 
