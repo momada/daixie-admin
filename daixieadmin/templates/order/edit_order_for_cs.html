@@ -139,7 +139,7 @@
                     <div class="form-control">{{order.expect_order_price}}</div>
                 </div>
             </div>
-            {% if order.actual_order_price %}
+            {% if order.actual_order_price or order.actual_order_price == 0 %}
             <div class="form-group">
                 <div class="col-md-2 control-label">实际订单价格</div>
                 <div class="col-md-5">

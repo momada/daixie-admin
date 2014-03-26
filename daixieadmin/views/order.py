@@ -7,7 +7,7 @@ from flask_wtf import Form
 from werkzeug.utils import secure_filename
 
 from wtforms import TextField, FloatField, SelectField, DateTimeField, TextAreaField, DateTimeField
-from wtforms.validators import DataRequired, EqualTo, Length, Regexp, Email
+from wtforms.validators import DataRequired, EqualTo, Length, Regexp, Email, NumberRange, Optional
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 
 from flask.ext.login import login_required, current_user
@@ -134,6 +134,9 @@ def edit_order_for_cs(id):
     order.expect_hour = form.expect_hour.data
     order.actual_hour = form.actual_hour.data if form.actual_hour.data == '' else None
 
+    if not order.actual_order_price and form.actual_order_price.data != '':
+        order.actual_order_price = form.actual_order_price.data
+
     if file:
         save_file_with_order_id(id, file)
         order.supp_info = secure_filename(file.filename)
@@ -144,6 +147,8 @@ def edit_order_for_cs(id):
         success(ret)
     except DaixieError as e:
         fail(e)
+        order.actual_order_price = None
+        return render_template('order/edit_order_for_cs.html', form=form, id=id, order=order, nav_order_manage='active')
 
     return redirect(url_for('admin.home'))
 
@@ -187,6 +192,8 @@ def edit_order_for_admin(id):
         success(ret)
     except DaixieError as e:
         fail(e)
+        order.actual_order_price = None
+        return render_template('order/edit_order_for_admin.html', form=form, id=id, order=order, nav_order_manage='active')
 
     return redirect(url_for('admin.home'))
 
@@ -225,6 +232,7 @@ class CSEditOrderForm(Form):
     grade = SelectField(u'订单级别', choices=grade_choices, default='0')
     expect_hour = TextField(u'预计耗时')
     actual_hour = TextField(u'实际耗时')
+    actual_order_price = FloatField(u'实际订单价格', validators=[NumberRange(0), Optional()])
 
 class AdminEditOrderForm(Form):
     status_choices = [('0', u'已创建'), ('1', u'已付款'), ('2', u'解决中'), ('3', u'已完成')]
@@ -244,4 +252,4 @@ class AdminEditOrderForm(Form):
     actual_hour = TextField(u'实际耗时')
     extra_item = TextField(u'其他事项')
     extra_money = TextField(u'其他金额')
-    actual_order_price = TextField(u'实际订单价格')
+    actual_order_price = FloatField(u'实际订单价格', validators=[NumberRange(0), Optional()])
