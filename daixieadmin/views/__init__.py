@@ -7,15 +7,6 @@ from flask.ext.login import current_user
 from daixieadmin import login_manager
 from daixieadmin.utils.error import j_err
 
-def login_required(func):
-
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        if not current_user.is_authenticated():
-            return login_manager.unauthorized()
-        return func(*args, **kwargs)
-    return wrapper
-
 def j_login_required(func):
 
     @wraps(func)

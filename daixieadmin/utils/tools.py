@@ -90,7 +90,8 @@ def save_file_with_order_id(id, file):
     return os.path.join(path, filename)
 
 def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
+    return True
+   # return '.' in filename and \
+    #      filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
 

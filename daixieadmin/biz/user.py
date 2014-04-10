@@ -108,7 +108,7 @@ class UserBiz:
         return User.query.filter(User.email.contains(query)).filter_by(type=type).paginate(page, per_page)
 
     @staticmethod
-    def recharge(id, amount, type, description):
+    def refund(id, amount, type, description):
         user = UserBiz.get_user_by_id(id)
         if not user:
             raise DaixieError(USER_NOT_EXIST)
@@ -122,12 +122,12 @@ class UserBiz:
         return RECHARGE_SUCCESS
 
     @staticmethod
-    def refund(id, amount, type, description):
+    def recharge(id, amount, type, description):
         user = UserBiz.get_user_by_id(id)
         if not user:
             raise DaixieError(USER_NOT_EXIST)
         try:
-            user.account -= int(amount)
+            user.account -= float(amount)
             db_session.add(user)
             db_session.commit()
             TransactionBiz.create(id, amount, user.account, type, description)

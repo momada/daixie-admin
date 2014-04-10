@@ -35,7 +35,6 @@ def create_order():
 
     form = OrderForm()
     if not form.validate_on_submit():
-        print form.errors
         return render_template('order/create.html', form=form, nav_order_manage='active')
 
     file = request.files['supp_info']    
@@ -43,24 +42,32 @@ def create_order():
         fail("file type error")
         return render_template('order/create.html', form=form, nav_order_manage='active')
 
-    file_path = "default_file_name"
     user = UserBiz.get_user_by_email(form.user_email.data)
     cs = AdminBiz.get_admin_by_email(form.cs_email.data)
     solver = UserBiz.get_user_by_email(form.solver_email.data)
+
     order = Order(user.id, cs.id, solver.id, form.require_time.data, form.expect_time.data, 
         form.title.data, form.expect_hour.data, form.expect_order_price.data, 
-        form.actual_order_price.data, form.grade.data, form.description.data, file_path, 
-        form.extra_item.data, form.extra_money.data, form.log.data)
+        0, form.grade.data, form.description.data, form.extra_item.data, form.extra_money.data, form.log.data)
+
+
     try:
         ret = OrderBiz.create_order(order)
     except DaixieError as e:
         fail(e)
-        return render_template('order/create.html', form=form, nav_order_manage='active')
+        return render_template('order/create.html', form=form, nav_order_manage='active')   
+
     order_id = order.id
     save_file_with_order_id(order_id, file)
     order.supp_info = secure_filename(file.filename)
-    OrderBiz.edit_order(order)
+    try:
+        OrderBiz.edit_order(order)
+    except DaixieError as e:
+        fail(e)
+        return render_template('order/create.html', form=form, nav_order_manage='active')
+
     success(ret)
+    print ret
     return redirect(url_for('.my_list'))
 
 @mod.route('/download/<int:id>', methods=['POST', 'GET'])
@@ -72,8 +79,9 @@ def download_file(id):
     return send_from_directory(path, filename, as_attachment=True)
 
 def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
+    return True
+    #return '.' in filename and \
+     #      filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
 @mod.route('/my_list')
 @mod.route('/my_list/<int:page>')
@@ -132,9 +140,9 @@ def edit_order_for_cs(id):
     order.log = order.log+form.log.data
     order.grade = form.grade.data
     order.expect_hour = form.expect_hour.data
-    order.actual_hour = form.actual_hour.data if form.actual_hour.data == '' else None
+    order.actual_hour = form.actual_hour.data
 
-    if not order.actual_order_price and form.actual_order_price.data != '':
+    if order.status == 3 and form.actual_order_price.data != 0:
         order.actual_order_price = form.actual_order_price.data
 
     if file:
@@ -147,7 +155,6 @@ def edit_order_for_cs(id):
         success(ret)
     except DaixieError as e:
         fail(e)
-        order.actual_order_price = None
         return render_template('order/edit_order_for_cs.html', form=form, id=id, order=order, nav_order_manage='active')
 
     return redirect(url_for('admin.home'))
@@ -179,8 +186,8 @@ def edit_order_for_admin(id):
     order.extra_item = form.extra_item.data
     order.extra_money = form.extra_money.data
 
-    if not order.actual_order_price and form.actual_order_price.data != '':
-        order.actual_order_price = form.actual_order_price.data
+    if order.status == 3 and form.actual_order_price.data != 0:
+        order.actual_order_price = float(form.actual_order_price.data)
 
     if file:
         save_file_with_order_id(id, file)
@@ -192,13 +199,12 @@ def edit_order_for_admin(id):
         success(ret)
     except DaixieError as e:
         fail(e)
-        order.actual_order_price = None
         return render_template('order/edit_order_for_admin.html', form=form, id=id, order=order, nav_order_manage='active')
 
     return redirect(url_for('admin.home'))
 
 class OrderForm(Form):
-    status_choices = [('0', u'已创建'), ('1', u'已付款'), ('2', u'解决中'), ('3', u'已完成')]
+    status_choices = [('0', u'已创建'), ('2', u'解决中'), ('3', u'已完成')]
     grade_choices = [('0', u'产品A'), ('1', u'产品B'), ('2', u'产品C'), ('3', u'产品D')]
 
     user_email = TextField(u'用户邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址'), User_Exist()])
@@ -220,7 +226,7 @@ class OrderForm(Form):
     actual_order_price = FloatField(u'实际订单价格')
 
 class CSEditOrderForm(Form):
-    status_choices = [('0', u'已创建'), ('1', u'已付款'), ('2', u'解决中'), ('3', u'已完成')]
+    status_choices = [('0', u'已创建'), ('2', u'解决中'), ('3', u'已完成')]
     grade_choices = [('0', u'产品A'), ('1', u'产品B'), ('2', u'产品C'), ('3', u'产品D')]
 
     status = SelectField(u'订单状态', choices=status_choices, default='0')
@@ -235,7 +241,7 @@ class CSEditOrderForm(Form):
     actual_order_price = FloatField(u'实际订单价格', validators=[NumberRange(0), Optional()])
 
 class AdminEditOrderForm(Form):
-    status_choices = [('0', u'已创建'), ('1', u'已付款'), ('2', u'解决中'), ('3', u'已完成')]
+    status_choices = [('0', u'已创建'), ('2', u'解决中'), ('3', u'已完成')]
     grade_choices = [('0', u'产品A'), ('1', u'产品B'), ('2', u'产品C'), ('3', u'产品D')]
 
     cs_email = TextField(u'客服邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])

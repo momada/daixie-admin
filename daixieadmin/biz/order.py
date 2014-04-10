@@ -45,18 +45,19 @@ class OrderBiz:
 	def edit_order(order):
 		o = OrderBiz.get_order_by_id(order.id)
 		user = UserBiz.get_user_by_id(order.user_id)
-		if not o:
+
+		if o is None:
 			raise DaixieError(ORDER_NOT_EXIST)
 
-		if o.actual_order_price is not None and order.actual_order_price:
+		if o.status >= 1 and order.actual_order_price != 0:
 			try:
 				amount = float(o.expect_order_price)-float(order.actual_order_price)
 				if amount>0:
-					UserBiz.recharge(o.user_id, abs(amount), type=Transaction.TYPE.REFUND, description=u'根据订单最终价格将差额返还账户')
+					UserBiz.refund(o.user_id, abs(amount), type=Transaction.TYPE.REFUND, description=u'根据订单最终价格将差额返还账户')
 				else:
 					if user.account < abs(amount):
 						raise DaixieError(u'用户的余额不足，无法填写订单实际价格，修改失败')
-					UserBiz.refund(o.user_id, abs(amount), type=Transaction.TYPE.PAY, description=u'根据订单最终价格将差额从账户中扣除')
+					UserBiz.recharge(o.user_id, abs(amount), type=Transaction.TYPE.PAY, description=u'根据订单最终价格将差额从账户中扣除')
 			except DaixieError as e:
 				raise e
 

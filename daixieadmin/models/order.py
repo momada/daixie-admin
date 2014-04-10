@@ -18,7 +18,7 @@ class Order(db.Model, UserMixin):
     user_id = db.Column('user_id', db.Integer)
     cs_id = db.Column('cs_id', db.Integer)
     solver_id = db.Column('solver_id', db.Integer)
-    status = db.Column('status', db.Integer)
+    status = db.Column('status', db.Integer, default = 0)
     create_time = db.Column('create_time', db.DateTime)
     require_time = db.Column('require_time', db.DateTime)
     expect_time = db.Column('expect_time', db.DateTime)
@@ -27,17 +27,17 @@ class Order(db.Model, UserMixin):
     supp_info = db.Column('supp_info', db.String)
     log = db.Column('log', db.String)
     grade = db.Column('grade', db.Integer)
-    expect_hour = db.Column('expect_hour', db.FLOAT)
-    actual_hour = db.Column('actual_hour', db.FLOAT)
+    expect_hour = db.Column('expect_hour', db.FLOAT, default=0)
+    actual_hour = db.Column('actual_hour', db.FLOAT, default=0)
     extra_item = db.Column('extra_item', db.String)
     extra_money = db.Column('extra_money', db.String)
-    expect_order_price = db.Column('expect_order_price', db.FLOAT)
-    actual_order_price = db.Column('actual_order_price', db.FLOAT, nullable=True)
+    expect_order_price = db.Column('expect_order_price', db.FLOAT, default=0)
+    actual_order_price = db.Column('actual_order_price', db.FLOAT, nullable=False, default=0)
 
 
     
     def __init__(self, user_id, cs_id, solver_id, require_time, expect_time, title, expect_hour, \
-             expect_order_price, grade, actual_order_price=None, description=None, supp_info=None, \
+             expect_order_price, grade, actual_order_price=None, description=None, \
              extra_item=None, extra_money=None, log=''):
         self.user_id = user_id
         self.cs_id = cs_id
@@ -48,7 +48,6 @@ class Order(db.Model, UserMixin):
         self.expect_time = expect_time
         self.title = title
         self.description = description
-        self.supp_info = supp_info
         self.log = log
         self.grade = grade
         self.expect_hour = expect_hour
