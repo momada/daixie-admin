@@ -31,7 +31,7 @@ class Order(db.Model, UserMixin):
     actual_hour = db.Column('actual_hour', db.FLOAT, default=0)
     extra_item = db.Column('extra_item', db.String)
     extra_money = db.Column('extra_money', db.String)
-    expect_order_price = db.Column('expect_order_price', db.FLOAT, default=0)
+    expect_order_price = db.Column('expect_order_price', db.FLOAT, nullable=False, default=0)
     actual_order_price = db.Column('actual_order_price', db.FLOAT, nullable=False, default=0)
 
 

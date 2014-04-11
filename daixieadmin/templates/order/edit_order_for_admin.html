@@ -84,6 +84,9 @@
                 {{ form.supp_info.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
                     {{ form.supp_info() }}
+                    {% if order.supp_info%}
+                        已上传文件:{{order.supp_info}}
+                    {% endif %}
                     {{ error(form.errors['supp_info']) }}
                 </div>
             </div>

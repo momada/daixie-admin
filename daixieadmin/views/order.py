@@ -7,7 +7,7 @@ from flask_wtf import Form
 from werkzeug.utils import secure_filename
 
 from wtforms import TextField, FloatField, SelectField, DateTimeField, TextAreaField, DateTimeField
-from wtforms.validators import DataRequired, EqualTo, Length, Regexp, Email, NumberRange, Optional
+from wtforms.validators import DataRequired,  Length, Regexp, Email, NumberRange, Optional
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 
 from flask.ext.login import login_required, current_user
@@ -32,7 +32,8 @@ def create_order():
     '''
     创建订单
     '''
-
+    if not current_user.is_authenticated():
+        return redirect(url_for('general.index'))    
     form = OrderForm()
     if not form.validate_on_submit():
         return render_template('order/create.html', form=form, nav_order_manage='active')
@@ -60,6 +61,7 @@ def create_order():
     order_id = order.id
     save_file_with_order_id(order_id, file)
     order.supp_info = secure_filename(file.filename)
+    
     try:
         OrderBiz.edit_order(order)
     except DaixieError as e:
@@ -67,7 +69,6 @@ def create_order():
         return render_template('order/create.html', form=form, nav_order_manage='active')
 
     success(ret)
-    print ret
     return redirect(url_for('.my_list'))
 
 @mod.route('/download/<int:id>', methods=['POST', 'GET'])
@@ -76,6 +77,7 @@ def download_file(id):
     order = OrderBiz.get_order_by_id(id)
     filename = order.supp_info
     path = app.config['DIR_RESOURCES'] +'/'+ str(id) +'/'
+    print "file to be downloaded is at : ", path
     return send_from_directory(path, filename, as_attachment=True)
 
 def allowed_file(filename):
@@ -87,11 +89,14 @@ def allowed_file(filename):
 @mod.route('/my_list/<int:page>')
 @login_required
 def my_list(page=1):
-	'''
-	查看我的所有订单
-	'''
-	pager = OrderBiz.get_order_list_by_admin_id(current_user.id, page=1)
-	return render_template('order/list.html', order_list=pager, paginate=True, nav_order_manage='active')
+    '''
+    查看我的所有订单
+    '''
+    if not current_user.is_authenticated():
+        return redirect(url_for('general.index'))    
+
+    pager = OrderBiz.get_order_list_by_admin_id(current_user.id, page=1)
+    return render_template('order/list.html', order_list =pager, paginate=True, nav_order_manage='active')
 
 @mod.route('/order_list')
 @mod.route('/order_list/<int:page>')
@@ -100,6 +105,8 @@ def order_list(page=1):
     '''
     查看所有订单
     '''
+    if not current_user.is_authenticated():
+        return redirect(url_for('general.index'))    
     pager = None
     pager = OrderBiz.get_order_list_by_pager(page)
     return render_template('order/list.html', order_list=pager, paginate=True, nav_order_manage='active')
@@ -107,15 +114,22 @@ def order_list(page=1):
 @mod.route('/more_info/<int:id>')
 @login_required
 def more_info(id):
-	order = OrderBiz.get_order_by_id(id)
-	if current_user.type == Admin.ADMIN_TYPE.CS:
+    if not current_user.is_authenticated():
+        print "not logged in!!!!!!!!!!!"
+        #fail(u"Please Login")
+        return redirect(url_for('general.index'))
+  
+    order = OrderBiz.get_order_by_id(id)
+    if current_user.type == Admin.ADMIN_TYPE.CS:
 		return render_template('order/more_info_for_cs.html', order=order, nav_order_manage='active')
-	else:
-		return render_template('order/more_info_for_admin.html', order=order, nav_order_manage='active')
+    else:
+        return render_template('order/more_info_for_admin.html', order=order, nav_order_manage='active')
 
 @mod.route('/edit_order/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_order(id):
+    if not current_user.is_authenticated():
+        return redirect(url_for('general.index'))    
     if(current_user.type == Admin.ADMIN_TYPE.CS):
         return redirect(url_for('.edit_order_for_cs', id=id))
     else:
@@ -125,6 +139,12 @@ def edit_order(id):
 @mod.route('/edit_order_for_cs/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_order_for_cs(id):
+    if not current_user.is_authenticated():
+        return redirect(url_for('general.index'))
+    if current_user.type != Admin.ADMIN_TYPE.CS:
+        fail(u"用户权限不足")
+        return redirect(url_for('general.index'))
+
     order = OrderBiz.get_order_by_id(id)
     form = CSEditOrderForm(obj=order)
     form.log.data = ''
@@ -132,8 +152,8 @@ def edit_order_for_cs(id):
         return render_template('order/edit_order_for_cs.html', form=form, id=id, order=order, nav_order_manage='active')
     
     file = request.files['supp_info']    
-
-    order.status = form.status.data
+    if order.status <= form.status.data:
+        order.status = form.status.data
     order.expect_time = form.expect_time.data
     order.title = form.title.data
     order.description = form.description.data
@@ -142,7 +162,7 @@ def edit_order_for_cs(id):
     order.expect_hour = form.expect_hour.data
     order.actual_hour = form.actual_hour.data
 
-    if order.status == 3 and form.actual_order_price.data != 0:
+    if order.status == '3' and form.actual_order_price.data != 0 and form.actual_order_price is not None:
         order.actual_order_price = form.actual_order_price.data
 
     if file:
@@ -162,6 +182,12 @@ def edit_order_for_cs(id):
 @mod.route('/edit_order_for_admin/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_order_for_admin(id):
+    if not current_user.is_authenticated() :
+        return redirect(url_for('general.index'))    
+    if current_user.type != Admin.ADMIN_TYPE.ADMIN:
+        fail(u"用户权限不足")
+        return redirect(url_for('general.index'))
+
     order = OrderBiz.get_order_by_id(id)
     form = AdminEditOrderForm(obj=order)
     if not form.validate_on_submit():
@@ -174,7 +200,8 @@ def edit_order_for_admin(id):
 
     order.cs_id = cs.id
     order.solver_id = solver.id
-    order.status = form.status.data
+    if order.status <= form.status.data:
+        order.status = form.status.data
     order.require_time = form.require_time.data
     order.expect_time = form.expect_time.data
     order.title = form.title.data
@@ -185,9 +212,8 @@ def edit_order_for_admin(id):
     order.actual_hour = form.actual_hour.data
     order.extra_item = form.extra_item.data
     order.extra_money = form.extra_money.data
-
-    if order.status == 3 and form.actual_order_price.data != 0:
-        order.actual_order_price = float(form.actual_order_price.data)
+    if order.status == '3' and form.actual_order_price.data != 0 and form.actual_order_price.data is not None:
+        order.actual_order_price = form.actual_order_price.data
 
     if file:
         save_file_with_order_id(id, file)
@@ -236,13 +262,14 @@ class CSEditOrderForm(Form):
     supp_info= FileField(u'辅助信息')
     log = TextAreaField(u'新日志')
     grade = SelectField(u'订单级别', choices=grade_choices, default='0')
-    expect_hour = TextField(u'预计耗时')
-    actual_hour = TextField(u'实际耗时')
-    actual_order_price = FloatField(u'实际订单价格', validators=[NumberRange(0), Optional()])
+    expect_hour = FloatField(u'预计耗时')
+    actual_hour = FloatField(u'实际耗时')
+    actual_order_price = FloatField(u'实际订单价格', validators=[NumberRange(0)])
 
 class AdminEditOrderForm(Form):
     status_choices = [('0', u'已创建'), ('2', u'解决中'), ('3', u'已完成')]
-    grade_choices = [('0', u'产品A'), ('1', u'产品B'), ('2', u'产品C'), ('3', u'产品D')]
+    grade_choices = [('0', u'产品A'), ('1', u'产品B'), ('2', u'产品C'), ('3', u'产品D')] 
+
 
     cs_email = TextField(u'客服邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])
     solver_email = TextField(u'解题员邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])
@@ -254,8 +281,8 @@ class AdminEditOrderForm(Form):
     supp_info= FileField(u'辅助信息')
     log = TextAreaField(u'日志')
     grade = SelectField(u'订单级别', choices=grade_choices, default='0')
-    expect_hour = TextField(u'预计耗时')
-    actual_hour = TextField(u'实际耗时')
+    expect_hour = FloatField(u'预计耗时',validators=[DataRequired()])
+    actual_hour = FloatField(u'实际耗时')
     extra_item = TextField(u'其他事项')
-    extra_money = TextField(u'其他金额')
-    actual_order_price = FloatField(u'实际订单价格', validators=[NumberRange(0), Optional()])
+    extra_money = FloatField(u'其他金额', default=0)
+    actual_order_price = FloatField(u'实际订单价格', validators=[NumberRange(0)])

@@ -34,3 +34,9 @@ class Admin(db.Model, UserMixin):
 
     def __repr__(self):
         return '<ADMIN %r %s>' % (self.email, self.type)
+    
+    def is_authenticated(self):
+        return True
+
+    def is_anonymous(self):
+        return False           

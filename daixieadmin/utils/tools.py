@@ -72,6 +72,7 @@ def send_email2(to,title,body):
 
 def file_path(id):
     folder = '%s/%s' % (app.config['DIR_RESOURCES'],id)
+    print folder
     if os.path.isdir(folder):
         list = os.listdir(folder)
         print list
@@ -87,6 +88,7 @@ def save_file_with_order_id(id, file):
     filename = secure_filename(file.filename)
     path = file_path(id)
     file.save(os.path.join(path, filename))
+    print os.path.join(path, filename)
     return os.path.join(path, filename)
 
 def allowed_file(filename):

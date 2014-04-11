@@ -29,7 +29,7 @@ class OrderBiz:
 		return Order.query.filter_by(cs_id=cs_id).order_by(Order.id.desc()).paginate(page, per_page);
 
 	@staticmethod
-	def get_order_list_by_pager(page=1, per_page=30):
+	def get_order_list_by_pager(page=1, per_page=20):
 		return Order.query.order_by(Order.id.desc()).paginate(page, per_page);
 
 	@staticmethod
@@ -49,7 +49,7 @@ class OrderBiz:
 		if o is None:
 			raise DaixieError(ORDER_NOT_EXIST)
 
-		if o.status >= 1 and order.actual_order_price != 0:
+		if o.status >= '1' and order.actual_order_price != 0:
 			try:
 				amount = float(o.expect_order_price)-float(order.actual_order_price)
 				if amount>0:

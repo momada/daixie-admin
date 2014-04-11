@@ -48,6 +48,8 @@ def add_cs():
     '''
     创建解题员和客服
     '''
+    if not current_user.is_authenticated():
+        return redirect(url_for('general.index'))    
     if current_user.type == Admin.ADMIN_TYPE.ADMIN:
         form = RegisterForm()
         if not form.validate_on_submit():
@@ -74,6 +76,8 @@ def update_cs(id):
     '''
     update cs
     '''
+    if not current_user.is_authenticated():
+        return redirect(url_for('general.index'))    
     cs=AdminBiz.get_admin_by_id(id);
     form = AccountForm();
     if not form.validate_on_submit():
@@ -93,6 +97,8 @@ def update_solver(id):
     '''
     update solver
     '''
+    if not current_user.is_authenticated():
+        return redirect(url_for('general.index'))    
     solver=UserBiz.get_user_by_id(id);
     form = AccountForm();
     if not form.validate_on_submit():
@@ -113,6 +119,8 @@ def delete_cs(id):
     '''
     delete cs
     '''
+    if not current_user.is_authenticated():
+        return redirect(url_for('general.index'))    
     cs = AdminBiz.get_admin_by_id(id)
     try:
         ret = AdminBiz.delete_CS(cs=cs)
@@ -128,6 +136,8 @@ def delete_solver(id):
     '''
     delete cs
     '''
+    if not current_user.is_authenticated():
+        return redirect(url_for('general.index'))    
     solver = UserBiz.get_user_by_id(id)
     try:
         ret = UserBiz.delete_solver(solver)
