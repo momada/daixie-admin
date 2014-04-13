@@ -230,15 +230,15 @@ def edit_order_for_admin(id):
     return redirect(url_for('admin.home'))
 
 class OrderForm(Form):
-    status_choices = [('0', u'已创建'), ('2', u'解决中'), ('3', u'已完成')]
+    status_choices = [('0', u'已创建'), ('2', u'正在解决'), ('3', u'已解决')]
     grade_choices = [('0', u'产品A'), ('1', u'产品B'), ('2', u'产品C'), ('3', u'产品D')]
 
     user_email = TextField(u'用户邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址'), User_Exist()])
     cs_email = TextField(u'客服邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])
     solver_email = TextField(u'解题员邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])
     status = SelectField(u'订单状态', choices=status_choices, default='0')
-    require_time = DateTimeField(u'要求时间', validators=[DataRequired()])
-    expect_time = DateTimeField(u'预计时间', validators=[DataRequired()])
+    require_time = DateTimeField(u'要求完成时间', validators=[DataRequired()])
+    expect_time = DateTimeField(u'预计完成时间', validators=[DataRequired()])
     title = TextField(u'标题', validators=[DataRequired()])
     description = TextAreaField(u'描述')
     supp_info= FileField(u'辅助信息',validators=[FileRequired(u"请选择文件")])
@@ -252,11 +252,11 @@ class OrderForm(Form):
     actual_order_price = FloatField(u'实际订单价格')
 
 class CSEditOrderForm(Form):
-    status_choices = [('0', u'已创建'), ('2', u'解决中'), ('3', u'已完成')]
+    status_choices = [('0', u'已创建'), ('2', u'正在解决'), ('3', u'已解决')]
     grade_choices = [('0', u'产品A'), ('1', u'产品B'), ('2', u'产品C'), ('3', u'产品D')]
 
     status = SelectField(u'订单状态', choices=status_choices, default='0')
-    expect_time = DateTimeField(u'预计时间', validators=[DataRequired()])
+    expect_time = DateTimeField(u'预计完成时间', validators=[DataRequired()])
     title = TextField(u'标题')
     description = TextField(u'描述')
     supp_info= FileField(u'辅助信息')
@@ -267,15 +267,15 @@ class CSEditOrderForm(Form):
     actual_order_price = FloatField(u'实际订单价格', validators=[NumberRange(0)])
 
 class AdminEditOrderForm(Form):
-    status_choices = [('0', u'已创建'), ('2', u'解决中'), ('3', u'已完成')]
+    status_choices = [('0', u'已创建'), ('2', u'正在解决'), ('3', u'已解决')]
     grade_choices = [('0', u'产品A'), ('1', u'产品B'), ('2', u'产品C'), ('3', u'产品D')] 
 
 
     cs_email = TextField(u'客服邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])
     solver_email = TextField(u'解题员邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])
     status = SelectField(u'订单状态', choices=status_choices, default='0')
-    require_time = DateTimeField(u'要求时间', validators=[DataRequired()])
-    expect_time = DateTimeField(u'预计时间', validators=[DataRequired()])
+    require_time = DateTimeField(u'要求完成时间', validators=[DataRequired()])
+    expect_time = DateTimeField(u'预计完成时间', validators=[DataRequired()])
     title = TextField(u'标题')
     description = TextField(u'描述')
     supp_info= FileField(u'辅助信息')
@@ -284,5 +284,4 @@ class AdminEditOrderForm(Form):
     expect_hour = FloatField(u'预计耗时',validators=[DataRequired()])
     actual_hour = FloatField(u'实际耗时')
     extra_item = TextField(u'其他事项')
-    extra_money = FloatField(u'其他金额', default=0)
     actual_order_price = FloatField(u'实际订单价格', validators=[NumberRange(0)])

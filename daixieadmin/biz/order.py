@@ -37,6 +37,9 @@ class OrderBiz:
 		try:
 			db_session.add(order)
 			db_session.commit()
+			order.id += 1794800000
+			db_session.add(order)
+			db_session.commit()				
 		except:
 			raise DaixieError(CREATE_ORDER_FAIL)
 		return CREATE_ORDER_OK
@@ -53,11 +56,11 @@ class OrderBiz:
 			try:
 				amount = float(o.expect_order_price)-float(order.actual_order_price)
 				if amount>0:
-					UserBiz.refund(o.user_id, abs(amount), type=Transaction.TYPE.REFUND, description=u'根据订单最终价格将差额返还账户')
+					UserBiz.refund(o.user_id, abs(amount), type=Transaction.TYPE.REFUND, description=u'订单最终价格调整')
 				else:
 					if user.account < abs(amount):
 						raise DaixieError(u'用户的余额不足，无法填写订单实际价格，修改失败')
-					UserBiz.recharge(o.user_id, abs(amount), type=Transaction.TYPE.PAY, description=u'根据订单最终价格将差额从账户中扣除')
+					UserBiz.recharge(o.user_id, abs(amount), type=Transaction.TYPE.PAY, description=u'订单最终价格调整')
 			except DaixieError as e:
 				raise e
 

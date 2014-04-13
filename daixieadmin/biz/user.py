@@ -119,7 +119,7 @@ class UserBiz:
             TransactionBiz.create(id, amount, user.account, type, description)
         except:
             raise DaixieError(RECHARGE_FAIL)
-        return RECHARGE_SUCCESS
+        return REFUND_SUCCESS
 
     @staticmethod
     def recharge(id, amount, type, description):
@@ -133,4 +133,4 @@ class UserBiz:
             TransactionBiz.create(id, amount, user.account, type, description)
         except:
             raise DaixieError(REFUND_FAIL)
-        return REFUND_SUCCESS
+        return RECHARGE_SUCCESS

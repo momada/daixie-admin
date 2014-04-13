@@ -28,5 +28,8 @@ class TransactionBiz:
             transaction = Transaction(user_id, amount, account, type, description)
             db_session.add(transaction)
             db_session.commit()
+            transaction.id += 2371400000
+            db_session.add(transaction)
+            db_session.commit()
         except:
             raise DaixieError(u'生成交易记录失败')
