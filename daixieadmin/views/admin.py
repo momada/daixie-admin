@@ -33,7 +33,7 @@ def home():
 @login_required
 def cs_list():
     '''
-    网站首页
+    
     '''
     if current_user.type == Admin.ADMIN_TYPE.ADMIN:
         all_cs = AdminBiz.get_all_CS();

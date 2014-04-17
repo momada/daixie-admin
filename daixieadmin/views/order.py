@@ -86,7 +86,6 @@ def allowed_file(filename):
      #      filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
 @mod.route('/my_list')
-@mod.route('/my_list/<int:page>')
 @login_required
 def my_list(page=1):
     '''
@@ -96,10 +95,9 @@ def my_list(page=1):
         return redirect(url_for('general.index'))    
 
     pager = OrderBiz.get_order_list_by_admin_id(current_user.id, page=1)
-    return render_template('order/list.html', order_list =pager, paginate=True, nav_order_manage='active')
+    return render_template('order/list.html', my_list =pager, paginate=True, nav_order_manage='active')
 
 @mod.route('/order_list')
-@mod.route('/order_list/<int:page>')
 @login_required
 def order_list(page=1):
     '''
@@ -110,6 +108,31 @@ def order_list(page=1):
     pager = None
     pager = OrderBiz.get_order_list_by_pager(page)
     return render_template('order/list.html', order_list=pager, paginate=True, nav_order_manage='active')
+
+@mod.route('/order_list/<int:page>')
+@login_required
+def order_list_page(page=1):
+    '''
+    查看所有订单
+    '''
+    if not current_user.is_authenticated():
+        raise u'权限不足'    
+    pager = None
+    pager = OrderBiz.get_order_list_by_pager(page)
+    return render_template('order/morelist.html', order_list=pager, paginate=True, nav_order_manage='active')
+
+@mod.route('/my_list/<int:page>')
+@login_required
+def my_list_page(page=1):
+    '''
+    查看所有订单
+    '''
+    if not current_user.is_authenticated():
+        raise u'权限不足'    
+    pager = None
+    pager = OrderBiz.get_order_list_by_admin_id(current_user.id, page=1)
+    return render_template('order/morelist.html', my_list =pager, paginate=True, nav_order_manage='active')    
+
 
 @mod.route('/more_info/<int:id>')
 @login_required

@@ -38,9 +38,10 @@ all_css = Bundle('bootstrap/css/bootstrap.min.css', 'bootstrap/css/bootstrap.the
 all_js = Bundle('jQuery/jquery-1.10.2.min.js', 'bootstrap/js/bootstrap.min.js', 
 	'select2/select2.js', 'select2/select2.min.js', 'site/js/common.js', 'datetimepicker/js/bootstrap-datetimepicker.min.js', 
 	'datetimepicker/locale/bootstrap-datetimepicker.zh-CN.js', filters='jspacker', output='gen/packed.js')
-
+favicon = Bundle('img/logo.png')
 assets.register('all_css', all_css)
 assets.register('all_js', all_js)
+assets.register('favicon', favicon)
 
 #
 # Login
