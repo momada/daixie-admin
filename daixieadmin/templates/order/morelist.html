@@ -1,0 +1,33 @@
+{% from 'import/tools.html' import list %}
+
+{% if order_list %}
+{{list(order_list)}}
+{% endif %}
+
+{% if my_list %}
+{{list(my_list)}}
+{% endif %}
+
+<SCRIPT TYPE="text/javascript">
+        $("#o-next").click(function(event){
+        event.preventDefault();
+        
+        var url = $("#onextpage").attr('href'); 
+        
+        $.get(url,function(data,status){
+            $("#main").html(data);
+        });
+
+      });
+
+      $("#o-pre").click(function(event){
+        event.preventDefault();
+        
+        var url = $("#oprepage").attr('href'); 
+        
+        $.get(url,function(data,status){
+            $("#main").html(data);
+        });
+
+      });
+</SCRIPT>
