@@ -11,7 +11,9 @@ from flask.ext.sqlalchemy import Pagination
 from flask.ext.login import login_required, current_user
 
 from daixieadmin.biz.user import UserBiz
+from daixieadmin.biz.admin import AdminBiz
 from daixieadmin.models.user import User
+from daixieadmin.models.admin import Admin
 from daixieadmin.utils.error import DaixieError, fail, success, j_ok, j_err
 from daixieadmin.utils.http import get_arg
 
@@ -54,8 +56,6 @@ def j_search_user():
 
 	if(type == 'user'):
 		type = User.USER_TYPE.USER
-	elif type == 'solver':
-		type = User.USER_TYPE.SOLVER
 
 	try:
 		if email:
@@ -73,6 +73,31 @@ def j_search_user():
 
 	return j_ok(u'搜索成功', items=users, pages=users_pager.pages)
 
+@mod.route('/solvers', methods=['GET'])
+@login_required
+def j_search_solvers():
+	email = request.args.get('email', '')
+	query = request.args.get('query', '')
+	page = get_arg('page', 1)
+	type = request.args.get('type', '')
+
+	type = Admin.ADMIN_TYPE.SOLVER
+
+	try:
+		if email:
+			user = AdminBiz.get_cs_by_email(email, type)
+			users_pager = Pagination(None, 1, 1, 1, [user])
+		else:
+			users_pager = AdminBiz.get_by_like(query, type, page, per_page=10)
+	except DaixieError as e:
+		return j_err(e)
+
+	users = [{
+	'id': user.email,
+	'text': user.email
+	} for user in users_pager.items if user]
+
+	return j_ok(u'搜索成功', items=users, pages=users_pager.pages)
 class ProfileForm(Form):
 	sex_choices = [('0', u'男'), ('1', u'女')]
 	email = TextField(u'登录邮箱', validators=[DataRequired(), Email()])

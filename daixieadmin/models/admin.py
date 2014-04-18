@@ -12,7 +12,7 @@ class Admin(db.Model, UserMixin):
 
     __tablename__ = 'admin'
 
-    ADMIN_TYPE = enum(CS=0, ADMIN=1)
+    ADMIN_TYPE = enum(CS=0, ADMIN=1, SOLVER=2)
 
     id = db.Column('id', db.Integer, primary_key=True)
     email = db.Column('email', db.String(45), unique=True, nullable=False)
@@ -31,6 +31,8 @@ class Admin(db.Model, UserMixin):
     def user_type(self):
         if self.type == Admin.ADMIN_TYPE.CS:
             return u'客服'
+        if self.type == Admin.ADMIN_TYPE.SOLVER:
+            return u'解题员'
 
     def __repr__(self):
         return '<ADMIN %r %s>' % (self.email, self.type)

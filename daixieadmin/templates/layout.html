@@ -47,9 +47,11 @@
                   订单管理<span class="caret"></span>
               </a>
               <ul class="dropdown-menu">
+                {% if current_user.type ==0 or current_user.type ==1 %}
                   <li><a href="{{ url_for('order.create_order') }}">创建订单</a></li>
-                   <li><a href="{{ url_for('order.my_list') }}">查看我的订单</a></li>
                    <li><a href="{{ url_for('order.order_list') }}">查看所有订单</a></li>
+                {% endif %}
+                   <li><a href="{{ url_for('order.my_list') }}">查看我的订单</a></li>
               </ul>
             </li>
             {% if current_user.type==1 %}
@@ -92,9 +94,9 @@
 
     {% block wrapper %}
     <div class="container wrapper">
-        <div id="main" class="row">
-    {% block search %}
+          {% block search %}
     {% endblock %}
+        <div id="main" class="row">
     {% block content %}
     {% endblock content %}
         </div>

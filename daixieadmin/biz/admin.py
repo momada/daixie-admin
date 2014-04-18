@@ -22,8 +22,13 @@ class AdminBiz:
         return cs
 
     @staticmethod
-    def get_cs_by_email(email):
+    def get_cs_by_email(email, type=Admin.ADMIN_TYPE.CS):
         cs = db_session.query(Admin).filter_by(email=email, type=Admin.ADMIN_TYPE.CS).first()
+        return cs
+    
+    @staticmethod
+    def get_solver_by_email(email):
+        cs = db_session.query(Admin).filter_by(email=email, type=Admin.ADMIN_TYPE.SOLVER).first()
         return cs
 
     @staticmethod
@@ -64,6 +69,15 @@ class AdminBiz:
         return CS_ADD_OK
 
     @staticmethod
+    def add_solver(solver):
+        if AdminBiz.get_admin_by_email(solver.email):
+            raise DaixieError(USER_DUPLICATE)
+        solver.type = Admin.ADMIN_TYPE.SOLVER
+        db_session.add(solver)
+        db_session.commit()
+        return CS_ADD_OK
+
+    @staticmethod
     def delete_CS(cs):
         db_session.delete(cs)
         db_session.commit()
@@ -71,7 +85,7 @@ class AdminBiz:
 
     @staticmethod
     def get_all_CS():
-        all_cs = db_session.query(Admin).filter(Admin.type == 'CS').all()   #pass the admin
+        all_cs = db_session.query(Admin).filter(Admin.type != Admin.ADMIN_TYPE.ADMIN).all()   #pass the admin
         return all_cs
 
     @staticmethod
@@ -81,5 +95,8 @@ class AdminBiz:
         return dict(qq_list=qq_list)
 
     @staticmethod
-    def get_by_like(query, page=1, per_page=5):
-        return Admin.query.filter(Admin.email.contains(query)).filter_by(type=Admin.ADMIN_TYPE.CS).paginate(page, per_page)
+    def get_by_like(query, type=Admin.ADMIN_TYPE.CS, page=1, per_page=5):
+        if type == 0 :
+            return Admin.query.filter(Admin.email.contains(query)).filter(Admin.type != Admin.ADMIN_TYPE.SOLVER).paginate(page, per_page)
+        else :
+            return Admin.query.filter(Admin.email.contains(query)).filter_by(type=type).paginate(page, per_page)

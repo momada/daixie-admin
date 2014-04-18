@@ -75,15 +75,7 @@
               <div class="control-group">
               <label class="control-label">订单状态</label>
               <div class="controls">
-                  {% if order.status == '0' %}
-                  <span class="input-xlarge uneditable-input">已创建</span>
-                  {% elif order.status == '1' %}
-                  <span class="input-xlarge uneditable-input">已付款</span>
-                  {% elif order.status == '2' %}
-                  <span class="input-xlarge uneditable-input">正在解决</span>
-                  {% else %}
-                  <span class="input-xlarge uneditable-input">已解决</span>
-                  {% endif %}
+                {{order_status(order)}}
               </div>
               </div>
 

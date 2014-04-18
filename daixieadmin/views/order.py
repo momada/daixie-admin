@@ -44,14 +44,17 @@ def create_order():
         return render_template('order/create.html', form=form, nav_order_manage='active')
 
     user = UserBiz.get_user_by_email(form.user_email.data)
+
     cs = AdminBiz.get_admin_by_email(form.cs_email.data)
-    solver = UserBiz.get_user_by_email(form.solver_email.data)
+    solver = AdminBiz.get_solver_by_email(form.solver_email.data)
+    
+    print user.id, "cs :! ", cs.id, "solver : ", solver.id
 
     order = Order(user.id, cs.id, solver.id, form.require_time.data, form.expect_time.data, 
         form.title.data, form.expect_hour.data, form.expect_order_price.data, 
         0, form.grade.data, form.description.data, form.extra_item.data, form.extra_money.data, form.log.data)
 
-
+    
     try:
         ret = OrderBiz.create_order(order)
     except DaixieError as e:
@@ -74,7 +77,7 @@ def create_order():
 @mod.route('/download/<int:id>', methods=['POST', 'GET'])
 @j_login_required
 def download_file(id):
-    order = OrderBiz.get_order_by_id(id)
+    order = OrderBiz.get_order_by_id(id).first()
     filename = order.supp_info
     path = app.config['DIR_RESOURCES'] +'/'+ str(id) +'/'
     print "file to be downloaded is at : ", path
@@ -96,8 +99,11 @@ def my_list(page=1):
     if not current_user.is_authenticated():
         return redirect(url_for('general.index'))    
     searchform = SearchForm()
-
-    pager = OrderBiz.get_order_list_by_admin_id(current_user.id, page=1)
+    pager = None
+    if current_user.type == Admin.ADMIN_TYPE.CS or current_user.type == Admin.ADMIN_TYPE.ADMIN:
+        pager = OrderBiz.get_order_list_by_admin_id(current_user.id, page=1)
+    if current_user.type == Admin.ADMIN_TYPE.SOLVER:
+        pager = OrderBiz.get_order_list_by_solver_id(current_user.id, page=1)
     return render_template('order/list.html',searchform = searchform, my_list =pager, type=1, nav_order_manage='active')
 
 @mod.route('/search_order/<int:type>',methods=['POST'])
@@ -150,7 +156,10 @@ def my_list_page(page=1):
     if not current_user.is_authenticated():
         raise u'权限不足'    
     pager = None
-    pager = OrderBiz.get_order_list_by_admin_id(current_user.id, page=1)
+    if current_user.type == Admin.ADMIN_TYPE.CS:
+        pager = OrderBiz.get_order_list_by_admin_id(current_user.id, page)
+    if current_user.type == Admin.ADMIN_TYPE.SOLVER:
+        pager = OrderBiz.get_order_list_by_solver_id(current_user.id, page)
     return render_template('order/morelist.html', my_list =pager, paginate=True, nav_order_manage='active', tpye=1)    
 
 
@@ -161,16 +170,21 @@ def more_info(id):
         fail(u'权限不足')
         return redirect(url_for('general.index'))
   
-    order = OrderBiz.get_order_by_id(id)
+    order = OrderBiz.get_order_by_id(id).first()
     if current_user.type == Admin.ADMIN_TYPE.CS:
 		return render_template('order/more_info_for_cs.html', order=order, nav_order_manage='active')
-    else:
+    if current_user.type == Admin.ADMIN_TYPE.ADMIN:
         return render_template('order/more_info_for_admin.html', order=order, nav_order_manage='active')
+    if current_user.type == Admin.ADMIN_TYPE.SOLVER:
+        return render_template('order/more_info_for_solver.html', order=order, nav_order_manage='active')
 
 @mod.route('/edit_order/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_order(id):
     if not current_user.is_authenticated():
+        return redirect(url_for('general.index'))
+    if(current_user.type == Admin.ADMIN_TYPE.SOLVER):
+        fail(u'用户权限不足')
         return redirect(url_for('general.index'))    
     if(current_user.type == Admin.ADMIN_TYPE.CS):
         return redirect(url_for('.edit_order_for_cs', id=id))
@@ -187,10 +201,11 @@ def edit_order_for_cs(id):
         fail(u"用户权限不足")
         return redirect(url_for('general.index'))
 
-    order = OrderBiz.get_order_by_id(id)
+    order = OrderBiz.get_order_by_id(id).first()
     form = CSEditOrderForm(obj=order)
     form.log.data = ''
     if not form.validate_on_submit():
+        print "show order editing"
         return render_template('order/edit_order_for_cs.html', form=form, id=id, order=order, nav_order_manage='active')
     
     file = request.files['supp_info']    
@@ -230,7 +245,7 @@ def edit_order_for_admin(id):
         fail(u"用户权限不足")
         return redirect(url_for('general.index'))
 
-    order = OrderBiz.get_order_by_id(id)
+    order = OrderBiz.get_order_by_id(id).first()
     form = AdminEditOrderForm(obj=order)
     if not form.validate_on_submit():
         return render_template('order/edit_order_for_admin.html', form=form, id=id, order=order, nav_order_manage='active')
@@ -238,7 +253,7 @@ def edit_order_for_admin(id):
     file = request.files['supp_info']    
     
     cs = AdminBiz.get_admin_by_email(form.cs_email.data)
-    solver = UserBiz.get_user_by_email(form.solver_email.data)
+    solver = AdminBiz.get_solver_by_email(form.solver_email.data)
 
     order.cs_id = cs.id
     order.solver_id = solver.id
@@ -253,7 +268,6 @@ def edit_order_for_admin(id):
     order.expect_hour = form.expect_hour.data
     order.actual_hour = form.actual_hour.data
     order.extra_item = form.extra_item.data
-    order.extra_money = form.extra_money.data
     if order.status == '3' and form.actual_order_price.data != 0 and form.actual_order_price.data is not None:
         order.actual_order_price = form.actual_order_price.data
 

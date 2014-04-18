@@ -60,8 +60,8 @@ def add_cs():
                 cs = Admin(form.email.data, form.passwd.data, form.qq.data)
                 ret = AdminBiz.add_CS(cs)
             else:
-                solver = User(form.email.data, form.passwd.data, form.user_type.data, form.qq.data)
-                ret = UserBiz.add_solver(solver)
+                solver = Admin(form.email.data, form.passwd.data, form.qq.data)
+                ret = AdminBiz.add_solver(solver)
             success(ret)
         except DaixieError as e:
             fail(e)
@@ -159,7 +159,7 @@ def j_search_cs():
             cs = AdminBiz.get_cs_by_email(email)
             cs_pager = Pagination(None, 1, 1, 1, [cs])
         else:
-            cs_pager = AdminBiz.get_by_like(query, page, per_page=10)
+            cs_pager = AdminBiz.get_by_like(query, 0,page, per_page=10)
     except DaixieError as e:
         return j_err(e)
 

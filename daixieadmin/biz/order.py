@@ -21,23 +21,24 @@ class OrderBiz:
 		return Order.query.filter_by(user_id=user_id).all()
 
 	@staticmethod
-	def get_order_list_by_solver_id(solver_id):
-		return Order.query.filter_by(solver_id=solver_id).all()
+	def get_order_list_by_solver_id(solver_id, page=1, per_page=10):
+		return Order.query.filter_by(solver_id=solver_id).paginate(page, per_page)
 
 	@staticmethod
-	def get_order_list_by_admin_id(cs_id, page=1, per_page=12):
+	def get_order_list_by_admin_id(cs_id, page=1, per_page=10):
 		return Order.query.filter_by(cs_id=cs_id).order_by(Order.id.desc()).paginate(page, per_page)
 
 	@staticmethod
-	def get_order_list_by_pager(page=1, per_page=12):
+	def get_order_list_by_pager(page=1, per_page=10):
 		return Order.query.order_by(Order.id.desc()).paginate(page, per_page)
 
 	@staticmethod
 	def create_order(order):
 		try:
+			print order.id
 			db_session.add(order)
 			db_session.commit()
-			order.id += 1794800000
+			order.id += 1739480000
 			db_session.add(order)
 			db_session.commit()				
 		except:
@@ -46,7 +47,7 @@ class OrderBiz:
 
 	@staticmethod
 	def edit_order(order):
-		o = OrderBiz.get_order_by_id(order.id)
+		o = OrderBiz.get_order_by_id(order.id).first()
 		user = UserBiz.get_user_by_id(order.user_id)
 
 		if o is None:

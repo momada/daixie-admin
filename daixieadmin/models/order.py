@@ -71,8 +71,9 @@ class Order(db.Model, UserMixin):
 
     @property
     def solver_email(self):
-        from daixieadmin.biz.user import UserBiz
-        solver = UserBiz.get_user_by_id(self.solver_id)
+        from daixieadmin.biz.admin import AdminBiz
+        solver = AdminBiz.get_admin_by_id(self.solver_id)
+        print "solver_email",solver.email
         return solver.email
 
     def __repr__(self):
