@@ -1,13 +1,28 @@
 {% extends 'layout.html' %}
 
-{% from 'import/tools.html' import list %}
+{% from 'import/tools.html' import list, error %}
+
+{% if searchform%}
+{% block search %}
+  <form id="searchform" class="form-horizontal" action="{{url_for('order.search__order', type=type)}}", method="POST">
+      <div class="form-group">
+        {{ searchform.order_id.label(class="col-md-2 control-label") }}
+      <div class="col-md-3">
+        {{ searchform.order_id(class='form-control') }}
+        {{ error(searchform.errors['order_id']) }}
+      </div>
+        <input value="Search" class="col-md-1 btn btn-large" type="submit"></input>
+      </div>
+  </form> 
+{% endblock %}
+{% endif %}
 {% block content %}
 
 {% if order_list %}
-{{list(order_list)}}
+{{list(order_list, type)}}
 {% endif %}
 {% if my_list %}
-{{list(my_list)}}
+{{list(my_list, type)}}
 {% endif %}
 
 {% endblock %}

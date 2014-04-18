@@ -6,7 +6,7 @@ from flask_wtf import Form
 
 from werkzeug.utils import secure_filename
 
-from wtforms import TextField, FloatField, SelectField, DateTimeField, TextAreaField, DateTimeField
+from wtforms import TextField, FloatField, SelectField, DateTimeField, TextAreaField, DateTimeField,IntegerField
 from wtforms.validators import DataRequired,  Length, Regexp, Email, NumberRange, Optional
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 
@@ -85,17 +85,34 @@ def allowed_file(filename):
     #return '.' in filename and \
      #      filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
+
 @mod.route('/my_list')
 @login_required
 def my_list(page=1):
     '''
     查看我的所有订单
     '''
+    
     if not current_user.is_authenticated():
         return redirect(url_for('general.index'))    
+    searchform = SearchForm()
 
     pager = OrderBiz.get_order_list_by_admin_id(current_user.id, page=1)
-    return render_template('order/list.html', my_list =pager, paginate=True, nav_order_manage='active')
+    return render_template('order/list.html',searchform = searchform, my_list =pager, type=1, nav_order_manage='active')
+
+@mod.route('/search_order/<int:type>',methods=['POST'])
+@login_required
+def search__order(type=1):
+    if not current_user.is_authenticated():
+        return redirect(url_for('general.index'))
+    searchform = SearchForm()
+
+    if type == 0:
+        result = OrderBiz.get_order_by_id(searchform.order_id.data)
+        return render_template('order/list.html', searchform = searchform, order_list=result.paginate(1,10), type=type, nav_order_manage='active')
+    else :
+        result = OrderBiz.get_order_by_id(searchform.order_id.data).filter_by(cs_id=current_user.id)
+        return render_template('order/list.html', searchform = searchform, order_list=result.paginate(1,10), type=type, nav_order_manage='active') 
 
 @mod.route('/order_list')
 @login_required
@@ -103,11 +120,14 @@ def order_list(page=1):
     '''
     查看所有订单
     '''
+
     if not current_user.is_authenticated():
         return redirect(url_for('general.index'))    
+    searchform = SearchForm()
+
     pager = None
     pager = OrderBiz.get_order_list_by_pager(page)
-    return render_template('order/list.html', order_list=pager, paginate=True, nav_order_manage='active')
+    return render_template('order/list.html', searchform = searchform, order_list=pager, type=0, nav_order_manage='active')
 
 @mod.route('/order_list/<int:page>')
 @login_required
@@ -131,15 +151,14 @@ def my_list_page(page=1):
         raise u'权限不足'    
     pager = None
     pager = OrderBiz.get_order_list_by_admin_id(current_user.id, page=1)
-    return render_template('order/morelist.html', my_list =pager, paginate=True, nav_order_manage='active')    
+    return render_template('order/morelist.html', my_list =pager, paginate=True, nav_order_manage='active', tpye=1)    
 
 
 @mod.route('/more_info/<int:id>')
 @login_required
 def more_info(id):
     if not current_user.is_authenticated():
-        print "not logged in!!!!!!!!!!!"
-        #fail(u"Please Login")
+        fail(u'权限不足')
         return redirect(url_for('general.index'))
   
     order = OrderBiz.get_order_by_id(id)
@@ -308,3 +327,9 @@ class AdminEditOrderForm(Form):
     actual_hour = FloatField(u'实际耗时')
     extra_item = TextField(u'其他事项')
     actual_order_price = FloatField(u'实际订单价格', validators=[NumberRange(0)])
+
+class SearchForm(Form):
+
+    user_id = IntegerField(u'用户编号')
+    cs_id = IntegerField(u' 客服编号')
+    order_id = IntegerField(u'订单编号')

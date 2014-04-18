@@ -14,7 +14,7 @@ class OrderBiz:
 
 	@staticmethod
 	def get_order_by_id(id):
-		return Order.query.filter_by(id=id).first()
+		return Order.query.filter_by(id=id)
 
 	@staticmethod
 	def get_order_list_by_user_id(user_id):

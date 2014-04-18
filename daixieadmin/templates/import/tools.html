@@ -129,12 +129,15 @@
   {% if order_list.has_prev %}<button id="o-pre" class="btn">上一页</button>{% else %}上一页{% endif %} | 
   {% if order_list.has_next %}<button id="o-next" class="btn">下一页</button>{% else %}下一页{% endif %}
   </div>
+  
   {% if type == 0%}     
   <a id="oprepage" href="{{ url_for('order.order_list_page', page = order_list.prev_num) }}"></a>
   <a id="onextpage" href="{{ url_for('order.order_list_page', page = order_list.next_num) }}"></a>
   {% endif %}
-    {% if type == 1%}     
-  <a id="oprepage" href="{{ url_for('order.order_list_page', page = order_list.prev_num) }}"></a>
-  <a id="onextpage" href="{{ url_for('order.order_list_page', page = order_list.next_num) }}"></a>
-  {% endif %}    
+  
+  {% if type == 1%}     
+  <a id="oprepage" href="{{ url_for('order.my_list_page', page = order_list.prev_num) }}"></a>
+  <a id="onextpage" href="{{ url_for('order.my_list_page', page = order_list.next_num) }}"></a>
+  {% endif %}
+    
 {% endmacro %}
