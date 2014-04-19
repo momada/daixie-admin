@@ -293,7 +293,7 @@ def edit_order_for_admin(id):
 
 class OrderForm(Form):
     status_choices = [('0', u'已创建'), ('2', u'正在解决'), ('3', u'已解决')]
-    grade_choices = [('0', u'产品A'), ('1', u'产品B'), ('2', u'产品C'), ('3', u'产品D')]
+    grade_choices = [('0', u'产品A'), ('1', u'产品B'), ('2', u'产品C'), ('3', u'产品D'),('4', u'产品E')]
 
     user_email = TextField(u'用户邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址'), User_Exist()])
     cs_email = TextField(u'客服邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])

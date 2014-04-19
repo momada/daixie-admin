@@ -114,8 +114,10 @@
                     <span class="input-xlarge uneditable-input">产品B</span>
                     {% elif order.grade == 2 %}
                     <span class="input-xlarge uneditable-input">产品C</span>
-                    {% else %}
+                    {% elif order.grade == 3 %}
                     <span class="input-xlarge uneditable-input">产品D</span>
+                    {% elif order.grade == 4 %}
+                    <span class="input-xlarge uneditable-input">产品E</span>
                     {% endif %}
                   </div>
               </div>

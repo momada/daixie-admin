@@ -38,7 +38,7 @@ class OrderBiz:
 			print order.id
 			db_session.add(order)
 			db_session.commit()
-			order.id += 1739480000
+			order.id += 17394800
 			db_session.add(order)
 			db_session.commit()				
 		except:
