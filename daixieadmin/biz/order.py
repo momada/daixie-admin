@@ -18,19 +18,19 @@ class OrderBiz:
 
 	@staticmethod
 	def get_order_list_by_user_id(user_id):
-		return Order.query.filter_by(user_id=user_id).all()
+		return Order.query.filter_by(user_id=user_id).order_by(Order.require_time.desc()).all()
 
 	@staticmethod
 	def get_order_list_by_solver_id(solver_id, page=1, per_page=10):
-		return Order.query.filter_by(solver_id=solver_id).paginate(page, per_page)
+		return Order.query.filter_by(solver_id=solver_id).order_by(Order.require_time.desc()).paginate(page, per_page)
 
 	@staticmethod
 	def get_order_list_by_admin_id(cs_id, page=1, per_page=10):
-		return Order.query.filter_by(cs_id=cs_id).order_by(Order.id.desc()).paginate(page, per_page)
+		return Order.query.filter_by(cs_id=cs_id).order_by(Order.require_time.desc()).paginate(page, per_page)
 
 	@staticmethod
 	def get_order_list_by_pager(page=1, per_page=10):
-		return Order.query.order_by(Order.id.desc()).paginate(page, per_page)
+		return Order.query.order_by(Order.require_time.desc()).paginate(page, per_page)
 
 	@staticmethod
 	def create_order(order):

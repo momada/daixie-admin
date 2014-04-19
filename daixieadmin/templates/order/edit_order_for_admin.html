@@ -35,7 +35,14 @@
             <div class="form-group">
                 {{ form.solver_email.label(class="col-md-2 control-label") }}
                 <div class="col-md-5">
-                    {{ form.solver_email(class='form-control') }}
+                    <input 
+                    value="{{ form.solver_email.data }}" 
+                    data-ajax-url="{{ url_for('user.j_search_solvers') }}" 
+                    name="solver_email" 
+                    user_type="solver" 
+                    type="hidden" 
+                    class="select" 
+                    placeholder="请选择解题员邮箱">
                     {{ error(form.errors['solver_email']) }}
                 </div>
             </div>
@@ -157,3 +164,8 @@
 </div>
 
 {% endblock content %}
+{% block js %}
+<script>
+    create_order.run();
+</script>
+{% endblock js %}

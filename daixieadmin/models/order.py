@@ -17,7 +17,7 @@ class Order(db.Model, UserMixin):
     id = db.Column('id', db.Integer, primary_key=True)
     user_id = db.Column('user_id', db.Integer)
     cs_id = db.Column('cs_id', db.Integer)
-    solver_id = db.Column('solver_id', db.Integer)
+    solver_id = db.Column('solver_id', db.Integer,default=0)
     status = db.Column('status', db.Integer, default = 0)
     create_time = db.Column('create_time', db.DateTime)
     require_time = db.Column('require_time', db.DateTime)

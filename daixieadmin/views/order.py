@@ -38,19 +38,23 @@ def create_order():
     if not form.validate_on_submit():
         return render_template('order/create.html', form=form, nav_order_manage='active')
 
-    file = request.files['supp_info']    
-    if not allowed_file(file.filename):
-        fail("file type error")
-        return render_template('order/create.html', form=form, nav_order_manage='active')
+    
+    file = request.files['supp_info'] 
+    if file :   
+        if not allowed_file(file.filename):
+            fail("file type error")
+            return render_template('order/create.html', form=form, nav_order_manage='active')
 
     user = UserBiz.get_user_by_email(form.user_email.data)
 
     cs = AdminBiz.get_admin_by_email(form.cs_email.data)
-    solver = AdminBiz.get_solver_by_email(form.solver_email.data)
-    
-    print user.id, "cs :! ", cs.id, "solver : ", solver.id
+    solverid = 0
+    if form.solver_email.data:
+        solver = AdminBiz.get_solver_by_email(form.solver_email.data)
+        solverid = solver.id
 
-    order = Order(user.id, cs.id, solver.id, form.require_time.data, form.expect_time.data, 
+
+    order = Order(user.id, cs.id, solverid, form.require_time.data, form.expect_time.data, 
         form.title.data, form.expect_hour.data, form.expect_order_price.data, 
         0, form.grade.data, form.description.data, form.extra_item.data, form.extra_money.data, form.log.data)
 
@@ -61,9 +65,10 @@ def create_order():
         fail(e)
         return render_template('order/create.html', form=form, nav_order_manage='active')   
 
-    order_id = order.id
-    save_file_with_order_id(order_id, file)
-    order.supp_info = secure_filename(file.filename)
+    if file :
+        order_id = order.id
+        save_file_with_order_id(order_id, file)
+        order.supp_info = secure_filename(file.filename)
     
     try:
         OrderBiz.edit_order(order)
@@ -206,7 +211,7 @@ def edit_order_for_cs(id):
     form.log.data = ''
     if not form.validate_on_submit():
         print "show order editing"
-        return render_template('order/edit_order_for_cs.html', form=form, id=id, order=order, nav_order_manage='active')
+        return render_template('order/edit_order_for_cs.html', form=form, id=   id, order=order, nav_order_manage='active')
     
     file = request.files['supp_info']    
     if order.status <= form.status.data:
@@ -224,6 +229,7 @@ def edit_order_for_cs(id):
 
     if file:
         save_file_with_order_id(id, file)
+        print file.name
         order.supp_info = secure_filename(file.filename)
 
     #修改订单
@@ -291,13 +297,13 @@ class OrderForm(Form):
 
     user_email = TextField(u'用户邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址'), User_Exist()])
     cs_email = TextField(u'客服邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])
-    solver_email = TextField(u'解题员邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])
+    solver_email = TextField(u'解题员邮箱')
     status = SelectField(u'订单状态', choices=status_choices, default='0')
     require_time = DateTimeField(u'要求完成时间', validators=[DataRequired()])
     expect_time = DateTimeField(u'预计完成时间', validators=[DataRequired()])
     title = TextField(u'标题', validators=[DataRequired()])
     description = TextAreaField(u'描述')
-    supp_info= FileField(u'辅助信息',validators=[FileRequired(u"请选择文件")])
+    supp_info= FileField(u'辅助信息')
     log = TextAreaField(u'日志')
     grade = SelectField(u'订单级别', choices=grade_choices, default='0')
     expect_hour = FloatField(u'预计耗时')
@@ -311,6 +317,7 @@ class CSEditOrderForm(Form):
     status_choices = [('0', u'已创建'), ('2', u'正在解决'), ('3', u'已解决')]
     grade_choices = [('0', u'产品A'), ('1', u'产品B'), ('2', u'产品C'), ('3', u'产品D')]
 
+    solver_email = TextField(u'解题员邮箱', validators=[Email(message=u'请填写正确的邮箱地址')])
     status = SelectField(u'订单状态', choices=status_choices, default='0')
     expect_time = DateTimeField(u'预计完成时间', validators=[DataRequired()])
     title = TextField(u'标题')
