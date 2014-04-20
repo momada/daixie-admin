@@ -14,9 +14,16 @@
             {{ form.csrf_token }}
 
             <div class="form-group">
-                <div class="col-md-2 control-label">订单编号</div>
+                <div class="col-md-2 control-label">
+                 <ul class="dropdown-menu">
+                    <li><a href="{{ url_for('order.create_order') }}">订单编号</a></li>
+                     <li><a href="{{ url_for('order.my_list') }}">解题员id</a></li>
+                     <li><a href="{{ url_for('order.order_list') }}">要求时间</a></li>
+                </ul></div>
                 <div class="col-md-5">
                     <div class="form-control">{{order.id}}</div>
+                    <div class="form-control">{{order.solver_id}}</div>
+                    <div class="form-control">{{order.require_time}}</div>
                 </div>
             </div>
             <div class="form-group">
