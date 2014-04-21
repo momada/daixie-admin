@@ -61,10 +61,12 @@ class OrderBiz:
 	@staticmethod
 	def create_order(order):
 		try:
-			print order.id
 			db_session.add(order)
-			db_session.commit()
-			print "create order id :",order.id			
+			db_session.commit()	
+			order.id += 17394000
+			print "new order id ",order.id
+			db_session.add(order)
+			db_session.commit()	 	
 		except:
 			raise DaixieError(CREATE_ORDER_FAIL)
 		return CREATE_ORDER_OK
