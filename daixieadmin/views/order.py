@@ -330,7 +330,7 @@ class OrderForm(Form):
 
 class CSEditOrderForm(Form):
     status_choices = [('0', u'已创建'), ('2', u'正在解决'), ('3', u'已解决')]
-    grade_choices = [('0', u'产品A'), ('1', u'产品B'), ('2', u'产品C'), ('3', u'产品D')]
+    grade_choices = [('0', u'产品A'), ('1', u'产品B'), ('2', u'产品C'), ('3', u'产品D'),('4', u'产品E')]
 
     solver_email = TextField(u'解题员邮箱', validators=[Email(message=u'请填写正确的邮箱地址')])
     status = SelectField(u'订单状态', choices=status_choices, default='0')
@@ -346,7 +346,7 @@ class CSEditOrderForm(Form):
 
 class AdminEditOrderForm(Form):
     status_choices = [('0', u'已创建'), ('2', u'正在解决'), ('3', u'已解决')]
-    grade_choices = [('0', u'产品A'), ('1', u'产品B'), ('2', u'产品C'), ('3', u'产品D')] 
+    grade_choices = [('0', u'产品A'), ('1', u'产品B'), ('2', u'产品C'), ('3', u'产品D'),('4', u'产品E')]
 
 
     cs_email = TextField(u'客服邮箱', validators=[DataRequired(), Email(message=u'请填写正确的邮箱地址')])
