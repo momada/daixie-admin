@@ -111,19 +111,15 @@ def my_list(page=1):
         pager = OrderBiz.get_order_list_by_solver_id(current_user.id, page=1)
     return render_template('order/list.html',searchform = searchform, my_list =pager, type=1, nav_order_manage='active')
 
-@mod.route('/search_order/<int:type>',methods=['POST'])
+@mod.route('/search_order',methods=['POST'])
 @login_required
-def search__order(type=1):
+def search_order():
     if not current_user.is_authenticated():
         return redirect(url_for('general.index'))
     searchform = SearchForm()
-
-    if type == 0:
-        result = OrderBiz.get_order_by_id(searchform.order_id.data)
-        return render_template('order/list.html', searchform = searchform, order_list=result.paginate(1,10), type=type, nav_order_manage='active')
-    else :
-        result = OrderBiz.get_order_by_id(searchform.order_id.data).filter_by(cs_id=current_user.id)
-        return render_template('order/list.html', searchform = searchform, order_list=result.paginate(1,10), type=type, nav_order_manage='active') 
+    print "order : ",searchform.order_id.data, "solver :", searchform.solver_id.data
+    result = OrderBiz.search_order_by_pager(1,searchform.order_id.data,searchform.solver_id.data,searchform.require_time.data)
+    return render_template('order/list.html', searchform = searchform, order_list=result, type=type, nav_order_manage='active')
 
 @mod.route('/order_list')
 @login_required
@@ -139,6 +135,26 @@ def order_list(page=1):
     pager = None
     pager = OrderBiz.get_order_list_by_pager(page)
     return render_template('order/list.html', searchform = searchform, order_list=pager, type=0, nav_order_manage='active')
+
+@mod.route('/due_order')
+@mod.route('/due_order/<int:page>')
+@login_required
+def due_order(page=0):
+    '''
+    
+    '''
+
+    if not current_user.is_authenticated():
+        return redirect(url_for('general.index'))    
+    searchform = SearchForm()
+    if page == 0:
+        pager = None
+        pager = OrderBiz.get_due_order_by_pager(1)
+        return render_template('order/list.html', searchform = searchform, order_list=pager, type=2, nav_order_manage='active')
+    else :
+        pager = None
+        pager = OrderBiz.get_due_order_by_pager(page)
+        return render_template('order/morelist.html', searchform = searchform, order_list=pager, type=2, nav_order_manage='active')
 
 @mod.route('/order_list/<int:page>')
 @login_required
@@ -351,6 +367,6 @@ class AdminEditOrderForm(Form):
 
 class SearchForm(Form):
 
-    user_id = IntegerField(u'用户编号')
-    cs_id = IntegerField(u' 客服编号')
-    order_id = IntegerField(u'订单编号')
+    require_time = DateTimeField(u'要求完成时间')
+    solver_id = IntegerField(u' 解题员编号',default='')
+    order_id = IntegerField(u'订单编号',default='')
