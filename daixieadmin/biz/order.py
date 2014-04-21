@@ -64,9 +64,7 @@ class OrderBiz:
 			print order.id
 			db_session.add(order)
 			db_session.commit()
-			order.id += 17394800
-			db_session.add(order)
-			db_session.commit()				
+			print "create order id :",order.id			
 		except:
 			raise DaixieError(CREATE_ORDER_FAIL)
 		return CREATE_ORDER_OK

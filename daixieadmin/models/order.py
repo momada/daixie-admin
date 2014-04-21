@@ -37,7 +37,7 @@ class Order(db.Model, UserMixin):
 
     
     def __init__(self, user_id, cs_id, solver_id, require_time, expect_time, title, expect_hour, \
-             expect_order_price, grade, actual_order_price=None, description=None, \
+             expect_order_price, grade, actual_order_price=0, description=None, \
              extra_item=None, extra_money=None, log=''):
         self.user_id = user_id
         self.cs_id = cs_id

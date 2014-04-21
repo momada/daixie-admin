@@ -55,8 +55,8 @@ def create_order():
 
 
     order = Order(user.id, cs.id, solverid, form.require_time.data, form.expect_time.data, 
-        form.title.data, form.expect_hour.data, form.expect_order_price.data, 
-        0, form.grade.data, form.description.data, form.extra_item.data, form.extra_money.data, form.log.data)
+        form.title.data, form.expect_hour.data, form.expect_order_price.data, form.grade.data, 0, \
+        form.description.data, form.extra_item.data, form.extra_money.data, form.log.data)
 
     
     try:
@@ -230,7 +230,7 @@ def edit_order_for_cs(id):
         return render_template('order/edit_order_for_cs.html', form=form, id=   id, order=order, nav_order_manage='active')
     
     file = request.files['supp_info']    
-    if order.status <= form.status.data:
+    if order.status>='1' and order.status <= form.status.data:
         order.status = form.status.data
     order.expect_time = form.expect_time.data
     order.title = form.title.data
@@ -279,7 +279,7 @@ def edit_order_for_admin(id):
 
     order.cs_id = cs.id
     order.solver_id = solver.id
-    if order.status <= form.status.data:
+    if order.status>='1' and order.status <= form.status.data:
         order.status = form.status.data
     order.require_time = form.require_time.data
     order.expect_time = form.expect_time.data
@@ -327,7 +327,6 @@ class OrderForm(Form):
     extra_item = TextField(u'其他事项')
     extra_money = FloatField(u'其他金额')
     expect_order_price = FloatField(u'预计订单价格')
-    actual_order_price = FloatField(u'实际订单价格')
 
 class CSEditOrderForm(Form):
     status_choices = [('0', u'已创建'), ('2', u'正在解决'), ('3', u'已解决')]
