@@ -10,6 +10,15 @@ jQuery(document).ready(function($) {
 /*
  * order/create.html
  */
+
+function showformat_user(item){
+
+    var markup = "<table class='table-condensed'><tr><td style='font-weight:bold;'>"+item.text+"</td></tr>" + 
+                                                "<tr style='color:#B22222;'><td>余额$"+item.account+
+                                                "</td></tr>" + "</table>";
+    return markup;
+}
+
 var create_order = (function(window, $){
 
     function getSelect2($select, formatResult, formatSelection) {
@@ -71,7 +80,7 @@ var create_order = (function(window, $){
     
     function _run(){
 
-        getSelect2($('input.select[name=user_email]'));
+        getSelect2($('input.select[name=user_email]'),showformat_user);
         getSelect2($('input.select[name=cs_email]'));
         getSelect2($('input.select[name=solver_email]'));
 

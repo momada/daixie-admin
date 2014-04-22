@@ -53,6 +53,7 @@ def j_search_user():
 	query = request.args.get('query', '')
 	page = get_arg('page', 1)
 	type = request.args.get('type', '')
+	#print "query is ",query
 
 	if(type == 'user'):
 		type = User.USER_TYPE.USER
@@ -68,7 +69,8 @@ def j_search_user():
 
 	users = [{
 	'id': user.email,
-	'text': user.email
+	'text': user.email,
+	'account': user.account
 	} for user in users_pager.items if user]
 
 	return j_ok(u'搜索成功', items=users, pages=users_pager.pages)
