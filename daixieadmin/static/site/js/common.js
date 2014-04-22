@@ -23,10 +23,11 @@ var create_order = (function(window, $){
 
     function getSelect2($select, formatResult, formatSelection) {
         var type = $select.attr('user_type');
+        var holder = $select.attr('data-placeholder');
         var options = {
             allowClear: true,
             initSelection: function(element, callback) {
-                if(!element.val()) return;
+               if(!element.val()) return holder;
                 $.ajax({
                     url: element.attr('data-ajax-url'),
                     data: {email: element.val(), type: type},

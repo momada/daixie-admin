@@ -279,7 +279,8 @@ def edit_order_for_admin(id):
 
     order.cs_id = cs.id
     order.solver_id = solver.id
-    if order.status>='1' and order.status <= form.status.data:
+    print "order status:", order.status, "form status :", form.status.data
+    if order.status>=1 and order.status <= form.status.data:
         order.status = form.status.data
     order.require_time = form.require_time.data
     order.expect_time = form.expect_time.data
